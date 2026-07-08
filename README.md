@@ -11,3 +11,5 @@ so that all the layers don't need to be shared and to provide extra safety, a se
 this seed is then packed, meaning it is also encrypted and shuffled.
 
 the packed seed and the library used to pack the seed can then be saved in a txt file. This way you can share the txt with anyone you want to have the same encryption scheme as you.
+
+libraryPacker.txt already contains default values and could thus be used for direct import.

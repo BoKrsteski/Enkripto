@@ -34,17 +34,17 @@ print("")
 createNew = False
 readFromtxt = False
 custom_PackerLibrary = "$M+EIaA{5ßGCWxL-2mhBqkjX 8?(d6SO4p]\;zw²eo)u_<l|!§tFVQ[R.v'>`TZ=P#³r3/}NK:bH1~&UJsDY*g,7i%n90fcy"
-importseed = "16{V*`{*fs`A;sV*;{{s{"
+importseed = "06QnR'>n'V[R'TQV>.[>v"
 seed_ispacked = True
 encryptionamount =random.randint(100,500) 
-ackMySeed = True
+packMySeed = True
 
 
 
 # used to exit upon errors
 def endProgram():
     raise Exception("program was stopped")
-  
+
 # use this to either reset or create the txt file with default values
 def resetFile():
     with open("packerLibrary.txt","w",encoding="utf-8") as file:
@@ -101,6 +101,7 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = "$
 # this is the initial creation and definition of important variables
 def makeLibrary():
     global SeedInUse1
+    global importseed
     if createNew:
         print("creating new seed...")
         library = createLibrary(normallibrary, random.randint(100,9999999), "init")
@@ -224,4 +225,4 @@ def writeToTXT():
 resetFile()
 makeLibrary()
 displaySeed()
-execute("decipher","5abB{5hbjLmGhb5WW$bh{5BbW b-$xBh")
+print(execute("decipher","5abB{5hbjLmGhb5WW$bh{5BbW b-$xBh"))

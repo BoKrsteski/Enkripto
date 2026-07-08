@@ -55,7 +55,7 @@ packMySeed = True
 
 
 
-# used to exit upon errors
+# used to exit upon self-raised errors
 def endProgram():
     raise Exception("program was stopped")
 
@@ -229,12 +229,15 @@ def displaySeed():
     else:
         print("seed is unpacked:")
         print(SeedInUse1)
+      
 #transfers your current seed and packerlibrary to the txt file, overwrites previous values
 def writeToTXT():
     print("writing packed seed and packerLibrary into packerlibrary.txt ...")
     with open("packerLibrary.txt","w",encoding="utf-8") as file:
         file.write(packSeed(SeedInUse1) + "@" + packerLibrary)
     print("successfully written data to txt")
+
+
 #this is an example of what a workflow could look like:
 resetFile()
 makeLibrary()

@@ -43,7 +43,7 @@ print("")
 # importseed: the seed you used, if it is packed, enable seed_ispacked. otherwhise disable.  A packed seed looks like this :  11QT'`V>'`TQV[>nQ[Vn    ; An unpacked seed looks like this:   902138.231.2079187
 # seed_ispacked: set to true if the seed you provided is packed, otherwhise set to false
 # encryptionamount: amount of encryption layers
-#PackMySeed. if True, packs the seed before displaying. set this to True if you want an extra layer of encryption. This will encrypt and shuffle the seed with a custom or default library. if false, displays pure seed
+# PackMySeed: if True, packs the seed before displaying. set this to True if you want an extra layer of encryption. This will encrypt and shuffle the seed with a custom or default library. if false, displays pure seed
 
 createNew = False
 readFromtxt = False

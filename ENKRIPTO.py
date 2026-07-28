@@ -27,7 +27,7 @@ print("")
                     # DICTIONARY: #
                     ###############
 
-# seed: the seed is a series of numbers that indicate procedures and parameters for the script to replicate the original circumstances. This way, the same en/decoding scheme can be used on different devices.
+# seed: the seed is a series of numbers that indicate procedures and parameters for the script to replicate the original circumstances. This way, the same en/decoding scheme can be used on different devices and/or instances.
 # pack : packing refers to the extra encryption of the seed. it is encrypted (with a custom or default) library and then shuffled (by a custom or random amount). these are extra safety measures to allow the seed to be transferred safely
 # library-layers : library-layers are shuffled versions of the alphabet ; An indefinite amount of them can be created, with each one of them encrypting itself using the previous one's properties. The last created layer is always the library that will be used for the main en-/de-coding.
 

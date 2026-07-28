@@ -3,7 +3,7 @@ import sys
 
 normallibrary="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/()=?` +*~#'<>|²³}]{[,.-;_:"
 throwawaylibrary=normallibrary
-print("-- cryptero v.0.1 --")
+print("-- ENKRIPTO v.0.1 --")
 print("")
 
 

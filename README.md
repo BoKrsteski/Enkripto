@@ -1,6 +1,7 @@
 # Enkripto
-NOTE: this project does work, but currently has no frontend. all params have to be defined by setting the variables.
-Also expect bugs, this was made in a day.
+ENKRIPTO now has it's own parser and mini language: NHH - Native Handling Hub.
+
+The .exe version is also released!
 
 it can encode an decode (or encrypt/decipher, call it what you like) any messages using a seed/library-layer system.
 
@@ -12,4 +13,4 @@ this seed is then packed, meaning it is also encrypted and shuffled.
 
 the packed seed and the library used to pack the seed can then be saved in a txt file. This way you can share the txt with anyone you want to have the same encryption scheme as you.
 
-packerLibrary.txt already contains default values and can thus be used for direct import.
+Default.txt already contains default values and can thus be used for direct import.

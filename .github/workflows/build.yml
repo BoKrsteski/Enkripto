@@ -16,7 +16,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
       - name: set up python
-        uses: actions/setup-pyrhon@v5
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: install pyinstaller

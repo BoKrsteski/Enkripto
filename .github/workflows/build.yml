@@ -1,8 +1,8 @@
 name: Build Enkripto
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
   workflow_dispatch:
 jobs:
   build:
@@ -38,3 +38,21 @@ jobs:
         with:
           name: enkripto-linux-x64
           path: dist/ENKRIPTO
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: download windows build
+        uses: actions/download-artifact@v4
+        with:
+          name: Enkripto-Windows-x64
+          path: release
+      - name: download linux build
+        uses: actions/download-artifact@v4
+        with:
+          name: enkripto-linux-x64
+          path: release
+      - name: create github release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*

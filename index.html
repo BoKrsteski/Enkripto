@@ -1,0 +1,2030 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Enkripto documentation">
+<title>ENKRIPTO — Documentation</title>
+
+<style>
+:root{
+  --bg:#070708;
+  --panel:#0d0d10;
+  --line:#25252c;
+  --text:#eeeef1;
+  --muted:#96969f;
+  --red:#ff334b;
+  --red2:#ff7180;
+  --green:#75e6a5;
+  --max:1180px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 75% 0,#ff334b12,transparent 32rem),
+    var(--bg);
+  color:var(--text);
+  font:15px/1.7 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+a{
+  color:inherit;
+}
+
+::selection{
+  background:#ff334b55;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.ek-header{
+  position:fixed!important;
+  z-index:99999!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  height:64px!important;
+
+  padding:0 28px!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+
+  background:#070708f5!important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  border-bottom:1px solid #ffffff0c!important;
+}
+
+.logo{
+  display:flex!important;
+  align-items:center!important;
+  gap:11px!important;
+
+  text-decoration:none!important;
+
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+
+  color:#eeeef1!important;
+}
+
+.ek-icon{
+  width:34px!important;
+  height:34px!important;
+
+  display:block!important;
+
+  object-fit:contain!important;
+  flex:none!important;
+
+  border-radius:8px!important;
+}
+
+.badge{
+  font:700 10px ui-monospace,monospace;
+  letter-spacing:.12em;
+
+  color:#888;
+
+  border:1px solid var(--line);
+  border-radius:999px;
+
+  padding:5px 9px;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+.wrap{
+  max-width:var(--max);
+  margin:auto;
+
+  padding:105px 28px 60px;
+
+  display:grid;
+  grid-template-columns:220px 1fr;
+
+  gap:68px;
+}
+
+aside{
+  position:sticky;
+  top:90px;
+  height:max-content;
+}
+
+.label{
+  font:700 10px ui-monospace,monospace;
+  letter-spacing:.17em;
+
+  text-transform:uppercase;
+
+  color:#666;
+
+  margin:0 0 10px 12px;
+}
+
+.nav{
+  display:grid;
+  gap:3px;
+}
+
+.nav a{
+  text-decoration:none;
+
+  color:var(--muted);
+
+  padding:8px 12px;
+
+  border-left:2px solid transparent;
+  border-radius:7px;
+
+  font-size:13px;
+}
+
+.nav a:hover,
+.nav a.active{
+  color:white;
+  background:#101014;
+  border-left-color:var(--red);
+}
+
+main{
+  min-width:0;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+  min-height:570px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+
+  padding-bottom:65px;
+}
+
+.eyebrow{
+  color:var(--red2);
+
+  font:700 10px ui-monospace,monospace;
+  letter-spacing:.17em;
+
+  text-transform:uppercase;
+}
+
+.eyebrow:before{
+  content:"";
+
+  display:inline-block;
+
+  width:6px;
+  height:6px;
+
+  border-radius:50%;
+
+  background:var(--red);
+
+  margin:0 9px 1px 0;
+
+  box-shadow:0 0 12px var(--red);
+}
+
+h1{
+  font-size:clamp(58px,9vw,105px);
+
+  line-height:.88;
+
+  letter-spacing:-.07em;
+
+  margin:22px 0 25px;
+}
+
+h1 span{
+  color:var(--red);
+}
+
+.lead{
+  max-width:680px;
+
+  color:#b6b6bf;
+
+  font-size:19px;
+
+  margin:0 0 30px;
+}
+
+.actions{
+  display:flex;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:11px 16px;
+
+  border:1px solid var(--line);
+
+  border-radius:9px;
+
+  background:#101014;
+
+  text-decoration:none;
+
+  font-weight:700;
+
+  font-size:13px;
+}
+
+.btn.primary{
+  background:var(--red);
+
+  border-color:var(--red);
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+section{
+  padding:76px 0;
+
+  border-top:1px solid var(--line);
+
+  scroll-margin-top:78px;
+}
+
+.kicker{
+  font:700 10px ui-monospace,monospace;
+
+  color:var(--red2);
+
+  letter-spacing:.16em;
+
+  text-transform:uppercase;
+}
+
+h2{
+  font-size:36px;
+
+  line-height:1.1;
+
+  letter-spacing:-.04em;
+
+  margin:8px 0 14px;
+}
+
+h3{
+  font-size:18px;
+
+  margin:0 0 6px;
+}
+
+p{
+  color:#aaaab3;
+}
+
+
+/* =========================
+   CONFIGURATION CARD
+========================= */
+
+.config-card{
+  margin:22px 0 24px;
+
+  padding:17px 19px;
+
+  border:1px solid var(--line);
+
+  border-radius:10px;
+
+  background:#0d0d10;
+}
+
+.config-label{
+  color:#666;
+
+  font:700 9px ui-monospace,monospace;
+
+  letter-spacing:.14em;
+
+  text-transform:uppercase;
+
+  margin-bottom:5px;
+}
+
+.config-title{
+  font-size:22px;
+
+  line-height:1.15;
+
+  letter-spacing:-.025em;
+
+  font-weight:750;
+
+  margin-bottom:3px;
+}
+
+.config-description{
+  color:#777780;
+
+  font-size:12px;
+
+  margin-bottom:11px;
+}
+
+.number-button{
+  display:inline-flex;
+
+  align-items:center;
+
+  border:1px solid #29292f;
+
+  border-radius:6px;
+
+  background:#111116;
+
+  color:#999;
+
+  padding:6px 9px;
+
+  cursor:pointer;
+
+  font:700 9px ui-monospace,monospace;
+
+  letter-spacing:.05em;
+
+  transition:.2s;
+}
+
+.number-button:hover{
+  background:#18181d;
+
+  border-color:#444;
+
+  color:#fff;
+}
+
+.real-number{
+  display:none;
+
+  margin:12px 0 0;
+
+  padding:11px;
+
+  background:#030304;
+
+  border:1px solid #202025;
+
+  border-radius:7px;
+
+  color:#aaa;
+
+  font:10px/1.6 ui-monospace,monospace;
+
+  overflow-wrap:anywhere;
+
+  word-break:break-all;
+}
+
+.real-number.visible{
+  display:block;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.grid{
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:12px;
+}
+
+.card{
+  padding:22px;
+
+  border:1px solid var(--line);
+
+  border-radius:14px;
+
+  background:linear-gradient(145deg,#111116,#0b0b0d);
+}
+
+.card p{
+  font-size:13px;
+
+  margin:0;
+}
+
+.callout{
+  margin:22px 0;
+
+  padding:16px 18px;
+
+  border-left:3px solid var(--red);
+
+  border-radius:9px;
+
+  background:#ff334b0b;
+
+  border-top:1px solid #ff334b22;
+  border-right:1px solid #ff334b22;
+  border-bottom:1px solid #ff334b22;
+}
+
+.callout p{
+  margin:0;
+
+  font-size:13px;
+}
+
+
+/* =========================
+   FLOW
+========================= */
+
+.flow{
+  display:grid;
+
+  gap:9px;
+
+  margin-top:24px;
+}
+
+.step{
+  display:grid;
+
+  grid-template-columns:35px 1fr;
+
+  gap:14px;
+
+  padding:16px;
+
+  border:1px solid var(--line);
+
+  border-radius:11px;
+
+  background:#0d0d10;
+}
+
+.num{
+  width:28px;
+  height:28px;
+
+  border-radius:7px;
+
+  background:#ff334b16;
+
+  color:var(--red2);
+
+  display:grid;
+
+  place-items:center;
+
+  font:800 11px ui-monospace,monospace;
+}
+
+.step p{
+  margin:0;
+
+  font-size:13px;
+}
+
+.step h3{
+  font-size:15px;
+}
+
+
+/* =========================
+   CODE
+========================= */
+
+code,
+.inline{
+  font:700 11px ui-monospace,monospace;
+}
+
+code{
+  color:#fff!important;
+
+  background:transparent!important;
+}
+
+.inline{
+  color:#f3a5ae;
+
+  background:#171116;
+
+  border:1px solid #322128;
+
+  padding:2px 5px;
+
+  border-radius:4px;
+}
+
+.terminal{
+  margin:22px 0;
+
+  border:1px solid #29292f;
+
+  border-radius:12px;
+
+  background:#030304!important;
+
+  overflow:hidden;
+
+  color:#ddd!important;
+}
+
+.th{
+  height:33px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:6px;
+
+  padding:0 12px;
+
+  border-bottom:1px solid #202025;
+
+  background:#09090b!important;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:#393940;
+}
+
+.tt{
+  margin-left:5px;
+
+  color:#666;
+
+  font:600 9px ui-monospace,monospace;
+}
+
+pre{
+  margin:0!important;
+
+  padding:18px!important;
+
+  overflow:auto!important;
+
+  color:#ddd!important;
+
+  background:#030304!important;
+
+  font:12px/1.8 ui-monospace,monospace!important;
+
+  border:0!important;
+
+  box-shadow:none!important;
+
+  white-space:pre!important;
+}
+
+.prompt{
+  color:var(--red2);
+}
+
+.ok{
+  color:var(--green);
+}
+
+.comment{
+  color:#666;
+}
+
+
+/* =========================
+   COMMANDS
+========================= */
+
+.commands{
+  display:grid;
+
+  gap:8px;
+
+  margin-top:22px;
+}
+
+.cmd{
+  display:grid;
+
+  grid-template-columns:235px 1fr;
+
+  gap:16px;
+
+  padding:14px 15px;
+
+  border:1px solid var(--line);
+
+  border-radius:10px;
+
+  background:#0d0d10;
+}
+
+.cmd code{
+  font-size:12px;
+}
+
+.cmd p{
+  margin:0;
+
+  font-size:12px;
+}
+
+
+/* =========================
+   PARAMETERS
+========================= */
+
+.params{
+  margin-top:23px;
+
+  border:1px solid var(--line);
+
+  border-radius:12px;
+
+  overflow:hidden;
+
+  background:#0d0d10;
+}
+
+.param{
+  display:grid;
+
+  grid-template-columns:190px 65px 1fr;
+
+  gap:14px;
+
+  padding:12px 14px;
+
+  border-bottom:1px solid #202026;
+
+  font-size:12px;
+}
+
+.param:last-child{
+  border-bottom:0;
+}
+
+.type{
+  color:var(--red2);
+
+  font:700 9px ui-monospace,monospace;
+
+  text-transform:uppercase;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+  border-top:1px solid var(--line);
+
+  padding:28px 0 5px;
+
+  color:#666;
+
+  font-size:11px;
+
+  display:flex;
+
+  justify-content:space-between;
+}
+
+
+/* =========================
+   REVEAL — SAFE VERSION
+========================= */
+
+.reveal,
+.reveal.show{
+  opacity:1 !important;
+  visibility:visible !important;
+  display:block !important;
+  transform:none !important;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile{
+  display:none;
+}
+
+@media(max-width:900px){
+
+  .wrap{
+    display:block;
+
+    padding:92px 20px 50px;
+  }
+
+  aside{
+    display:none;
+  }
+
+  .mobile{
+    display:flex;
+
+    position:fixed;
+
+    top:64px;
+
+    z-index:9990;
+
+    left:0;
+    right:0;
+
+    overflow:auto;
+
+    gap:5px;
+
+    padding:7px 10px;
+
+    background:#070708ee;
+
+    backdrop-filter:blur(14px);
+
+    border-bottom:1px solid var(--line);
+  }
+
+  .mobile a{
+    white-space:nowrap;
+
+    text-decoration:none;
+
+    color:#999;
+
+    padding:5px 8px;
+
+    border-radius:6px;
+
+    font-size:11px;
+  }
+
+  .mobile a:hover{
+    background:#111116;
+
+    color:#fff;
+  }
+}
+
+@media(max-width:620px){
+
+  .ek-header{
+    padding:0 16px!important;
+  }
+
+  .hero h1{
+    font-size:58px;
+  }
+
+  .lead{
+    font-size:16px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  section{
+    padding:58px 0;
+  }
+
+  h2{
+    font-size:30px;
+  }
+
+  .cmd{
+    grid-template-columns:1fr;
+
+    gap:5px;
+  }
+
+  .param{
+    grid-template-columns:1fr;
+
+    gap:2px;
+  }
+
+  footer{
+    display:block;
+  }
+
+  .config-card{
+    padding:15px 16px;
+  }
+
+  .config-title{
+    font-size:20px;
+  }
+}
+</style>
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="ek-header">
+
+  <a class="logo" href="#overview">
+
+    <img
+      class="ek-icon"
+      src="icon.jpg"
+      alt="Enkripto"
+    >
+
+    ENKRIPTO
+
+  </a>
+
+  <span class="badge">
+    DOCUMENTATION
+  </span>
+
+</header>
+
+
+<!-- MOBILE NAV -->
+
+<nav class="mobile">
+
+  <a href="#overview">Overview</a>
+  <a href="#concept">Concept</a>
+  <a href="#quickstart">Quick Start</a>
+  <a href="#ai-test">AI Test</a>
+  <a href="#preferences">Preferences</a>
+  <a href="#seeds">Seeds</a>
+  <a href="#nhh">NHH</a>
+  <a href="#commands">Commands</a>
+  <a href="#parameters">Parameters</a>
+
+</nav>
+
+
+<div class="wrap">
+
+
+<!-- SIDEBAR -->
+
+<aside>
+
+  <p class="label">
+    Documentation
+  </p>
+
+  <nav class="nav">
+
+    <a href="#overview">Overview</a>
+    <a href="#concept">Core Concept</a>
+    <a href="#quickstart">Quick Start</a>
+    <a href="#ai-test">AI Security Test</a>
+    <a href="#preferences">Preferences</a>
+    <a href="#seeds">Seeds & Libraries</a>
+    <a href="#nhh">NHH</a>
+    <a href="#commands">Commands</a>
+    <a href="#parameters">Parameters</a>
+    <a href="#workflow">Workflow</a>
+
+  </nav>
+
+</aside>
+
+
+<main>
+
+
+<!-- HERO -->
+
+<section
+  class="hero"
+  id="overview"
+  style="border:0"
+>
+
+  <div class="eyebrow">
+    Encryption System / Documentation
+  </div>
+
+  <h1>
+    Built on randomness.<br>
+    <span>Designed to resist.</span>
+  </h1>
+
+  <p class="lead">
+    Enkripto is a randomized encryption system built around individually
+    generated encryption configurations, transferable seed data, and its
+    own command language.
+  </p>
+
+  <div class="actions">
+
+    <a
+      class="btn primary"
+      href="#quickstart"
+    >
+      Get Started
+    </a>
+
+    <a
+      class="btn"
+      href="#commands"
+    >
+      Command Reference
+    </a>
+
+  </div>
+
+</section>
+
+
+<!-- CORE CONCEPT -->
+
+<section
+  id="concept"
+  class="reveal"
+>
+
+  <div class="kicker">
+    01 / Core Concept
+  </div>
+
+  <h2>
+    Every setup is different.
+  </h2>
+
+  <p>
+    Enkripto is designed around the idea that encryption should not rely
+    on one shared configuration. During initialization, Enkripto can
+    generate an individual seed and library for a setup. The resulting
+    configuration can then be used for encryption and decoding.
+  </p>
+
+
+  <div class="config-card">
+
+    <div class="config-label">
+      Configuration Space
+    </div>
+
+    <div class="config-title">
+      A 1 followed by 149 zeros.
+    </div>
+
+    <div class="config-description">
+      The number of encryption configurations Enkripto can generate.
+      That's roughly 10⁵⁹ times more than the number of grains of sand in a universe made entirely of sand.
+    </div>
+
+
+  </div>
+
+
+  <div class="grid">
+
+    <article class="card">
+
+      <h3>
+        Randomized configurations
+      </h3>
+
+      <p>
+        Instead of everyone working with the same configuration,
+        Enkripto can generate a different one for each setup. The large
+        configuration space makes identical configurations highly unlikely.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Reproducible with a seed
+      </h3>
+
+      <p>
+        The seed is a compact representation that lets Enkripto recreate
+        the required configuration later. The configuration itself does
+        not need to be transferred directly.
+      </p>
+
+    </article>
+
+  </div>
+
+
+  <div class="callout">
+
+    <p>
+      <strong>Note:</strong>
+      This page explains the public concept and workflow. Internal
+      generation and reconstruction details are intentionally not
+      documented here.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- QUICK START -->
+
+<section
+  id="quickstart"
+  class="reveal"
+>
+
+  <div class="kicker">
+    02 / Quick Start
+  </div>
+
+  <h2>
+    Ready for the Unreadable.
+  </h2>
+
+  <p>
+    The basic workflow is simple: initialize a configuration, use it to
+    process a message, and save the seed data when you need to reproduce
+    or transfer the setup. Because <span class="inline">createNew</span>
+    defaults to <span class="inline">True</span>, a new setup can be
+    started with just <span class="inline">init</span>.
+  </p>
+
+
+  <div class="flow">
+
+
+    <div class="step">
+
+      <div class="num">
+        01
+      </div>
+
+      <div>
+
+        <h3>
+          Initialize
+        </h3>
+
+        <p>
+          Use <span class="inline">init</span> or
+          <span class="inline">initiate</span> to start the library and
+          seed creation/import process.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="step">
+
+      <div class="num">
+        02
+      </div>
+
+      <div>
+
+        <h3>
+          Encrypt
+        </h3>
+
+        <p>
+          Pass a message to
+          <span class="inline">encrypt</span> or
+          <span class="inline">encode</span>.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="step">
+
+      <div class="num">
+        03
+      </div>
+
+      <div>
+
+        <h3>
+          Decipher
+        </h3>
+
+        <p>
+          Use <span class="inline">decipher</span> or
+          <span class="inline">decode</span> with the same configuration.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="step">
+
+      <div class="num">
+        04
+      </div>
+
+      <div>
+
+        <h3>
+          Save
+        </h3>
+
+        <p>
+          Use <span class="inline">save</span> or
+          <span class="inline">write</span> to store the current seed
+          data in a text file.
+        </p>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="terminal">
+
+    <div class="th">
+
+      <i class="dot"></i>
+      <i class="dot"></i>
+      <i class="dot"></i>
+
+      <span class="tt">
+        ENKRIPTO TERMINAL
+      </span>
+
+    </div>
+
+
+    <pre><span class="prompt">&gt;</span> init
+<span class="ok">[+] initialization complete</span>
+
+<span class="prompt">&gt;</span> encrypt msg=Hello World
+<span class="ok">[+] message encrypted</span>
+
+<span class="prompt">&gt;</span> decipher msg=&lt;encrypted-message&gt;
+<span class="ok">[+] message decoded</span></pre>
+
+  </div>
+
+</section>
+
+
+<!-- AI TEST -->
+
+<section
+  id="ai-test"
+  class="reveal"
+>
+
+  <div class="kicker">
+    03 / Security Experiment
+  </div>
+
+  <h2>
+    Even with the clues.
+  </h2>
+
+  <p>
+    As an informal experiment, an AI model was given an Enkripto seed in
+    both its raw and packed forms, together with an encrypted message.
+    The model was explicitly told that the data was a seed, which version
+    was packed, and which piece of data was the message.
+  </p>
+
+  <p>
+    Even with that information — far more context than an ordinary third
+    party would have — the model could not determine how to reconstruct
+    the required configuration or decipher the message.
+  </p>
+
+
+  <div class="callout">
+
+    <p>
+      <strong>What this demonstrates:</strong>
+      The experiment illustrates how difficult the data can be to
+      interpret without the Enkripto system itself. It is an informal
+      demonstration, not a mathematical proof of security or an
+      independent cryptographic audit.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- PREFERENCES -->
+
+<section
+  id="preferences"
+  class="reveal"
+>
+
+  <div class="kicker">
+    04 / Preferences
+  </div>
+
+  <h2>
+    Remember the way you work.
+  </h2>
+
+  <p>
+    Enkripto can store a small set of startup preferences in
+    <span class="inline">preferences.txt</span>.
+    These preferences control how initialization behaves the next time
+    you use the program.
+  </p>
+
+
+  <div class="grid">
+
+
+    <article class="card">
+
+      <h3>
+        Stored preferences
+      </h3>
+
+      <p>
+        The current persistent preferences are
+        <span class="inline">createNew</span>,
+        <span class="inline">readFromtxt</span>,
+        and <span class="inline">fileLocation</span>.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Default values
+      </h3>
+
+      <p>
+        If no saved preference overrides them, Enkripto starts with
+        <span class="inline">createNew=True</span>,
+        <span class="inline">readFromtxt=False</span>,
+        and <span class="inline">fileLocation=default.txt</span>.
+      </p>
+
+    </article>
+
+
+  </div>
+
+
+  <div class="terminal">
+
+    <div class="th">
+
+      <i class="dot"></i>
+      <i class="dot"></i>
+      <i class="dot"></i>
+
+      <span class="tt">
+        PREFERENCES.TXT
+      </span>
+
+    </div>
+
+
+    <pre><span class="comment"># Example preferences</span>
+createNew=True
+readFromtxt=False
+fileLocation=default.txt
+
+<span class="comment"># Because createNew defaults to True:</span>
+<span class="prompt">&gt;</span> init</pre>
+
+  </div>
+
+
+  <div class="callout">
+
+    <p>
+      <strong>Important:</strong>
+      Preferences and seed data are separate.
+      <span class="inline">preferences.txt</span> stores startup settings;
+      seed data is handled separately through the save/import workflow.
+    </p>
+
+  </div>
+
+
+  <p>
+    Use <span class="inline">restoredefaults</span>,
+    <span class="inline">defaults</span>, or
+    <span class="inline">default</span> to restore the default parameter
+    values.
+  </p>
+
+</section>
+
+
+<!-- SEEDS -->
+
+<section
+  id="seeds"
+  class="reveal"
+>
+
+  <div class="kicker">
+    05 / Seeds & Libraries
+  </div>
+
+  <h2>
+    Small data. Reproducible configuration.
+  </h2>
+
+  <p>
+    A <strong>seed</strong> is a set of numeric values that allows Enkripto
+    to recreate a library without directly transferring that library.
+    This makes seed data compact and convenient to store or transfer.
+  </p>
+
+
+  <div class="grid">
+
+
+    <article class="card">
+
+      <h3>
+        Raw seeds
+      </h3>
+
+      <p>
+        Raw seeds are compact numeric data. They are convenient when copying a seed directly and have a recognizable structure.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Packed seeds
+      </h3>
+
+      <p>
+        A packed seed uses an additional packing step, producing a less
+        immediately recognizable representation. Packed data is longer
+        but can be convenient for sharing through a text file.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Libraries
+      </h3>
+
+      <p>
+        A library represents the generated encryption configuration used
+        by Enkripto for its processing operations. Users generally work
+        with the seed rather than manually transferring the library.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Save & restore
+      </h3>
+
+      <p>
+        Enkripto can save seed data and the required packing information
+        into a text file. That data can later be used to restore the setup.
+      </p>
+
+    </article>
+
+
+  </div>
+
+
+  <div class="terminal">
+
+    <div class="th">
+
+      <i class="dot"></i>
+      <i class="dot"></i>
+      <i class="dot"></i>
+
+      <span class="tt">
+        SEED EXAMPLE
+      </span>
+
+    </div>
+
+
+    <pre><span class="comment"># raw seed — illustrative format only</span>
+123.4567.890
+
+<span class="comment"># packed seed — illustrative format only</span>
+dfsizt2u673598$&amp;</pre>
+
+  </div>
+
+</section>
+
+
+<!-- NHH -->
+
+<section
+  id="nhh"
+  class="reveal"
+>
+
+  <div class="kicker">
+    06 / NHH
+  </div>
+
+  <h2>
+    Native Handling Hub.
+  </h2>
+
+  <p>
+    Enkripto uses its own mini parsing language called
+    <strong>NHH</strong>. It provides a consistent way to enter commands
+    and parameters directly in the terminal.
+  </p>
+
+
+  <div class="grid">
+
+
+    <article class="card">
+
+      <h3>
+        Case insensitive
+      </h3>
+
+      <p>
+        Capitalization does not matter when entering commands or parameters.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Flexible parameter order
+      </h3>
+
+      <p>
+        Parameters do not need to be entered in a specific order.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Optional underscores
+      </h3>
+
+      <p>
+        Parameter names can omit underscores, such as
+        <span class="inline">seed_ispacked</span> and
+        <span class="inline">seedispacked</span>.
+      </p>
+
+    </article>
+
+
+    <article class="card">
+
+      <h3>
+        Defaults
+      </h3>
+
+      <p>
+        If a parameter is not provided, Enkripto falls back to its
+        default value.
+      </p>
+
+    </article>
+
+
+  </div>
+
+
+  <div class="terminal">
+
+    <div class="th">
+
+      <i class="dot"></i>
+      <i class="dot"></i>
+      <i class="dot"></i>
+
+      <span class="tt">
+        NHH SYNTAX
+      </span>
+
+    </div>
+
+
+    <pre><span class="prompt">&gt;</span> setparams createnew=True, encryptionamount=3
+
+<span class="prompt">&gt;</span> encrypt msg=Hello World
+
+<span class="comment"># parameter order does not matter</span>
+<span class="prompt">&gt;</span> setparams encryptionamount=3, createnew=True</pre>
+
+  </div>
+
+
+  <div class="callout">
+
+    <p>
+      <strong>Strings:</strong>
+      Avoid quotation marks around parameter values. Enkripto interprets
+      strings by default, so added quotation marks become part of the value.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- COMMANDS -->
+
+<section
+  id="commands"
+  class="reveal"
+>
+
+  <div class="kicker">
+    07 / Command Reference
+  </div>
+
+  <h2>
+    Commands at a glance.
+  </h2>
+
+  <p>
+    These commands are exposed through the current help system.
+    Aliases can be used interchangeably.
+  </p>
+
+
+  <div class="commands">
+
+    <div class="cmd">
+      <code>help</code>
+      <p>Shows the main help menu and explains how to access detailed help.</p>
+    </div>
+
+    <div class="cmd">
+      <code>explain</code>
+      <p>Starts the Enkripto tutorial.</p>
+    </div>
+
+    <div class="cmd">
+      <code>resetfile</code>
+      <p>Resets the text file to default values.</p>
+    </div>
+
+    <div class="cmd">
+      <code>init / initiate</code>
+      <p>Starts the library creation or import process.</p>
+    </div>
+
+    <div class="cmd">
+      <code>(function).params</code>
+      <p>Shows a function's relevant parameters and their current values.</p>
+    </div>
+
+    <div class="cmd">
+      <code>all.params</code>
+      <p>Shows all available parameters and their current values.</p>
+    </div>
+
+    <div class="cmd">
+      <code>save / write</code>
+      <p>Packs and saves the current seed to a text file.</p>
+    </div>
+
+    <div class="cmd">
+      <code>display / displayseed</code>
+      <p>Displays the current seed, packed or raw depending on the parameter.</p>
+    </div>
+
+    <div class="cmd">
+      <code>scan / list / ls</code>
+      <p>Scans and lists the current directory.</p>
+    </div>
+
+    <div class="cmd">
+      <code>currentpath / cwd / currentdir</code>
+      <p>Displays the work directory path.</p>
+    </div>
+
+    <div class="cmd">
+      <code>restoredefaults / defaults / default</code>
+      <p>Restores all parameters to their default values.</p>
+    </div>
+
+    <div class="cmd">
+      <code>setparams / setparam</code>
+      <p>Changes selected parameters without executing another function.</p>
+    </div>
+
+    <div class="cmd">
+      <code>encrypt / encode</code>
+      <p>Encrypts the provided target message using the current library.</p>
+    </div>
+
+    <div class="cmd">
+      <code>decipher / decode</code>
+      <p>Decodes the provided target message using the current library.</p>
+    </div>
+
+    <div class="cmd">
+      <code>exit</code>
+      <p>Closes the program.</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- PARAMETERS -->
+
+<section
+  id="parameters"
+  class="reveal"
+>
+
+  <div class="kicker">
+    08 / Parameters
+  </div>
+
+  <h2>
+    Control the process.
+  </h2>
+
+  <p>
+    Parameters use <span class="inline">name=value</span>.
+    Multiple parameters are separated by commas. Their order does not
+    matter, and omitted values use defaults.
+  </p>
+
+
+  <div class="params">
+
+    <div class="param">
+      <code>createnew</code>
+      <span class="type">bool</span>
+      <span>Whether a new seed and library should be generated.</span>
+    </div>
+
+    <div class="param">
+      <code>readfromtxt</code>
+      <span class="type">bool</span>
+      <span>Whether values should be read from a text file during initialization.</span>
+    </div>
+
+    <div class="param">
+      <code>filelocation</code>
+      <span class="type">str</span>
+      <span>Path to the text file used for seed data. Default: <strong>default.txt</strong>.</span>
+    </div>
+
+    <div class="param">
+      <code>custom_packerlibrary</code>
+      <span class="type">str</span>
+      <span>Packing-library data for manually imported packed seed data.</span>
+    </div>
+
+    <div class="param">
+      <code>importseed</code>
+      <span class="type">str</span>
+      <span>Manually supplied seed data for import.</span>
+    </div>
+
+    <div class="param">
+      <code>seed_ispacked</code>
+      <span class="type">bool</span>
+      <span>Whether manually imported seed data is packed.</span>
+    </div>
+
+    <div class="param">
+      <code>encryptionamount</code>
+      <span class="type">int</span>
+      <span>
+        Defines the number of encryption layers used during library creation.
+        The layer count adds another source of variability to the generated
+        result; a different layer count can produce a different library even
+        under otherwise similar conditions. More layers should not be
+        interpreted as automatically meaning more security.
+      </span>
+    </div>
+
+    <div class="param">
+      <code>packmyseed</code>
+      <span class="type">bool</span>
+      <span>Controls packed seed display/save behavior where supported.</span>
+    </div>
+
+    <div class="param">
+      <code>debug</code>
+      <span class="type">bool</span>
+      <span>Developer-oriented extra information; not recommended for normal use.</span>
+    </div>
+
+    <div class="param">
+      <code>msg / target</code>
+      <span class="type">str</span>
+      <span>The message or target supplied to encryption/decoding commands.</span>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- WORKFLOW -->
+
+<section
+  id="workflow"
+  class="reveal"
+>
+
+  <div class="kicker">
+    09 / Typical Workflow
+  </div>
+
+  <h2>
+    A practical session.
+  </h2>
+
+  <p>
+    A simplified example of how the pieces fit together without exposing
+    the internal encryption implementation.
+  </p>
+
+
+  <div class="terminal">
+
+    <div class="th">
+
+      <i class="dot"></i>
+      <i class="dot"></i>
+      <i class="dot"></i>
+
+      <span class="tt">
+        SESSION
+      </span>
+
+    </div>
+
+
+    <pre><span class="comment"># 1. Initialize a new configuration — defaults are enough</span>
+<span class="prompt">&gt;</span> init
+
+<span class="comment"># 2. Encrypt a message</span>
+<span class="prompt">&gt;</span> encrypt msg=Meet me at 8
+
+<span class="comment"># 3. Save the seed data</span>
+<span class="prompt">&gt;</span> save filelocation=save.txt
+
+<span class="comment"># 4. Later, restore/import the seed data</span>
+<span class="prompt">&gt;</span> init readfromtxt=True, filelocation=save.txt
+
+<span class="comment"># 5. Decode using the restored configuration</span>
+<span class="prompt">&gt;</span> decipher msg=&lt;encrypted-message&gt;</pre>
+
+  </div>
+
+
+  <div class="callout">
+
+    <p>
+      <strong>Tip:</strong>
+      Use <span class="inline">scan</span>,
+      <span class="inline">list</span>, or
+      <span class="inline">ls</span> to locate files.
+      Use <span class="inline">currentpath</span>,
+      <span class="inline">cwd</span>, or
+      <span class="inline">currentdir</span> to see where you are working.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+  <span>
+    ENKRIPTO — Documentation
+  </span>
+
+  <span>
+    NHH / Native Handling Hub
+  </span>
+
+</footer>
+
+
+</main>
+
+</div>
+
+
+<script>
+
+/* =========================
+   FULL CONFIGURATION NUMBER
+========================= */
+
+const realNumberValue = "1" + "0".repeat(149);
+
+
+function toggleRealNumber(){
+
+  const numberBox =
+    document.getElementById("realNumber");
+
+  const button =
+    document.getElementById("showNumberButton");
+
+
+  if(numberBox.classList.contains("visible")){
+
+    numberBox.classList.remove("visible");
+
+    numberBox.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    button.textContent =
+      "SHOW FULL NUMBER";
+
+  }else{
+
+    numberBox.textContent =
+      realNumberValue;
+
+    numberBox.classList.add("visible");
+
+    numberBox.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    button.textContent =
+      "HIDE FULL NUMBER";
+
+  }
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+const nav = [
+  ...document.querySelectorAll(".nav a")
+];
+
+const sections = [
+  ...document.querySelectorAll("main section[id]")
+];
+
+
+const io =
+  new IntersectionObserver(
+    entries =>
+      entries.forEach(entry => {
+
+        if(entry.isIntersecting){
+
+          nav.forEach(a =>
+            a.classList.toggle(
+              "active",
+              a.hash === "#" + entry.target.id
+            )
+          );
+
+        }
+
+      }),
+
+    {
+      rootMargin:"-25% 0px -65% 0px"
+    }
+  );
+
+
+sections.forEach(
+  section =>
+    io.observe(section)
+);
+
+
+/* =========================
+   REVEAL OBSERVER
+========================= */
+
+const revealObserver =
+  new IntersectionObserver(
+    entries =>
+      entries.forEach(entry => {
+
+        if(entry.isIntersecting){
+
+          entry.target.classList.add("show");
+
+          revealObserver.unobserve(
+            entry.target
+          );
+
+        }
+
+      }),
+
+    {
+      threshold:.08
+    }
+  );
+
+
+document
+  .querySelectorAll(".reveal")
+  .forEach(element =>
+    revealObserver.observe(element)
+  );
+
+</script>
+
+</body>
+</html>
+    

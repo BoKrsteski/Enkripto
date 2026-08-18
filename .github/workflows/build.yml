@@ -22,7 +22,7 @@ jobs:
       - name: install pyinstaller
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller
+          pip install pyinstaller pillow
       - name: build enkripto!
         run: |
           pyinstaller --onefile --icon=icon.ico ENKRIPTO.py

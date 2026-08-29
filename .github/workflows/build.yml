@@ -4,6 +4,8 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+permissions: 
+  contents: write
 jobs:
   build:
     strategy:
@@ -20,7 +22,7 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          echo "version=¼VERSION" >> "¼GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: set up python
         uses: actions/setup-python@v5
         with:
@@ -32,18 +34,32 @@ jobs:
       - name: build enkripto!
         run: |
           pyinstaller --onefile --icon=icon.ico ENKRIPTO.py
+      - name: prepare win release
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          mkdir release
+          cp dist/ENKRIPTO.exe "release/Enkripto-${{ steps.version.outputs.version }}-windows-x64.exe"
       - name: upload windows build
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
           name: Enkripto-Windows-x64
-          path: dist/ENKRIPTO.exe
+          path: release/*
+      - name: prepare linux release
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          mkdir release
+          cp dist/ENKRIPTO Enkripto
+          chmod +x Enkripto
+          tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" Enkripto
       - name: upload linux build
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: enkripto-linux-x64
-          path: dist/ENKRIPTO
+          path: release/*
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -58,6 +74,11 @@ jobs:
         with:
           name: enkripto-linux-x64
           path: release
+      - name: make sha256 checksums
+        working-directory: release
+        run: |
+          sha256sum * > SHA256SUMS.txt
+          
       - name: create github release
         uses: softprops/action-gh-release@v2
         with:

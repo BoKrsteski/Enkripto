@@ -1,98 +1,104 @@
 import random
 import os
+import sys
 import json
 import time
+
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
 else:
     os.system("printf '\\033[8;100;120t'")
-preferenceIdol = ["Default.txt,","1","0"]
-try:
-    print("fetching preferences...")
-    with open("preferences.json","r") as file:
-        Preferences = json.load(file)
-except FileNotFoundError:
-    print("no Preferences.json found. Creating new with default values...")
-    with open("preferences.json","w") as file:
-        json.dump({"filelocation":"Default.txt",
-                   "createnew": 1,
-                   "readfromtxt": 0},file,indent=4)
-        Preferences = {"filelocation":"Default.txt",
-                       "createnew": 1,
-                       "readfromtxt": 0}
-except json.JSONDecodeError:
-        print("no Preferences.json contains invalid JSON. restoring default values...")
+def fetchPreferences():
+    preferenceIdol = ["Default.txt,",1,0]
+    try:
+        print("fetching preferences...")
+        with open("preferences.json","r") as file:
+            Preferences = json.load(file)
+    except FileNotFoundError:
+        print("no Preferences.json found. Creating new with default values...")
         with open("preferences.json","w") as file:
             json.dump({"filelocation":"Default.txt",
-                       "createnew": 1,
-                       "readfromtxt": 0},file,indent=4)
+                    "createnew": 1,
+                    "readfromtxt": 0},file,indent=4)
             Preferences = {"filelocation":"Default.txt",
-                           "createnew": 1,
-                           "readfromtxt": 0}
-def defaultpref():
-    global preference
-    print("invalid preferences.json provided. Setting default values...")
-    with open("preferences.json","w") as file:
-        json.dump({"filelocation":"Default.txt",
-                   "createnew": 1,
-                   "readfromtxt": 0},file,indent=4)
-        preference = ["Default.txt","1","0"]
-if len(Preferences) == 3:
-    preference = Preferences.values()
-else:
-    defaultpref()
-indexCounter=0
-for i in preference:
-    indexCounter +=1
-    if indexCounter == 1:
-        if i.endswith(".txt"):
-            fileLocation:str = i
-        else:
-            print(f"invalid preference '{i}'. Using default value...")
+                        "createnew": 1,
+                        "readfromtxt": 0}
+    except json.JSONDecodeError:
+            print("no Preferences.json contains invalid JSON. restoring default values...")
             with open("preferences.json","w") as file:
-                Preferences["filelocation"] = "Default.txt"
-                json.dump(Preferences,file,indent=4)
-            fileLocation = "Default.txt"
-    elif indexCounter ==2 or indexCounter==3:
-        if i == 1 or i==0:
-            if indexCounter==2:
-                createNew = bool(int(i))
-            else:
-                readFromtxt=bool(int(i))
-        else:
-            print(f"invalid preference '{i}'. Using default value...")
-            if indexCounter==2:
-                with open("preferences.json","w") as file:
-                    Preferences["createnew"] = 1
-                    json.dump(Preferences,file,indent=4)
-                createNew = True
+                json.dump({"filelocation":"Default.txt",
+                        "createnew": 1,
+                        "readfromtxt": 0},file,indent=4)
+                Preferences = {"filelocation":"Default.txt",
+                            "createnew": 1,
+                            "readfromtxt": 0}
+    def defaultpref():
+        global preference
+        print("invalid preferences.json provided. Setting default values...")
+        with open("preferences.json","w") as file:
+            json.dump({"filelocation":"Default.txt",
+                    "createnew": 1,
+                    "readfromtxt": 0},file,indent=4)
+            preference = preferenceIdol
+    if len(Preferences) == 3:
+        preference = Preferences.values()
+    else:
+        defaultpref()
+    indexCounter=0
+    for i in preference:
+        indexCounter +=1
+        if indexCounter == 1:
+            global fileLocation
+            if i.endswith(".txt"):
+                fileLocation = i
             else:
                 print(f"invalid preference '{i}'. Using default value...")
                 with open("preferences.json","w") as file:
-                    Preferences["readfromtxt"] = 0
+                    Preferences["filelocation"] = "Default.txt"
                     json.dump(Preferences,file,indent=4)
-                readFromtxt=False
-print("preferences imported!")
+                fileLocation = "Default.txt"
+        elif indexCounter ==2 or indexCounter==3:
+            global readFromtxt
+            global createNew
+            if i == 1 or i==0:
+                if indexCounter==2:
+                    createNew = bool(int(i))
+                else:
+                    readFromtxt=bool(int(i))
+            else:
+                print(f"invalid preference '{i}'. Using default value...")
+                if indexCounter==2:
+                    with open("preferences.json","w") as file:
+                        Preferences["createnew"] = 1
+                        json.dump(Preferences,file,indent=4)
+                    createNew = True
+                else:
+                    print(f"invalid preference '{i}'. Using default value...")
+                    with open("preferences.json","w") as file:
+                        Preferences["readfromtxt"] = 0
+                        json.dump(Preferences,file,indent=4)
+                    readFromtxt=False
+    print("preferences imported!")
 
-time.sleep(0.5)
 
 normallibrary="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/()?`+*~#'<>|²³}]{[.-;_: ="
 throwawaylibrary=normallibrary
 library:str=""
-print(r'''
-                           s@S$$S@s                    ,@S$$S.               s@S$$S@s                    
-    ,sS$S@go_              $$$$$$$'       ,sS$S@S$s,_  $$$$$$$    ,sS$S@go,  $$$$$$$'         ,sS$S@go,  
-  ,s$$$$$$$$$$,sS$S@S$s,_  `$$$$$'  .,$$$$$$$$$  o$$$s,`$$$$P'  ,s$$$$$$$$$, `$$$$$,        ,s$$$$$$$$$, 
-  $$$$$' )$$$s$$$$$  $$$$s, $$$$$  $$$$$²'$$$$l `$$$$$P         $$$$$$l$$$$s $$$$$$%S$S;    $$$$$$l$$$$s 
-  $$$$' o$$$P'$$$$l   `$$$$ $$$$$%$s²"`_  $$$$$  `"""" od$$$bo. $$$$l' `$$$$,`$$$$$"²╙'     $$$$l' `$$$$,
-  $$$$,$"'"   $$$$$   ,$$$$ $$$$iP²╙$$$$$,$$$$$$       .l$$$i   $$$$$   $$$$$ l$$$i         $$$$,   $$$$$
-  $$$$$s.,$$$$$$$$$$  $$$$$ $$$$$   `$$$$$$$$$$$       $$$$$$,o.$$$$$ .,$$$$  $$$$$, _,b$$$$$$$$$s.,$$$$ 
-   `²$$$$$$$²' `²$$$  $$$$$ $$$$$   ,$$$$$`$²$$$       4$$$$$$b)$$$$$ $$$$²'  $$$$$$Sb$$$$$' `²$$$$$$$²' 
-      `"²"`           `²$ⁿ' `²$$$  ,$$$$$'  `""         `4$$$$" $$$$$ `$`     `²$²"^²$$$²'      `"²"`    
-                                   gV$$²'                       $$$$$                                    
-                                                                $$$$$                                    
-                                                                $$$$$                                     ''')
-print("-- ENKRIPTO v.0.2 --\ntype 'help' to see a list of commands or a command's function")
+def intro():
+    print(r'''
+                            s@S$$S@s                    ,@S$$S.               s@S$$S@s                    
+        ,sS$S@go_              $$$$$$$'       ,sS$S@S$s,_  $$$$$$$    ,sS$S@go,  $$$$$$$'         ,sS$S@go,  
+    ,s$$$$$$$$$$,sS$S@S$s,_  `$$$$$'  .,$$$$$$$$$  o$$$s,`$$$$P'  ,s$$$$$$$$$, `$$$$$,        ,s$$$$$$$$$, 
+    $$$$$' )$$$s$$$$$  $$$$s, $$$$$  $$$$$²'$$$$l `$$$$$P         $$$$$$l$$$$s $$$$$$%S$S;    $$$$$$l$$$$s 
+    $$$$' o$$$P'$$$$l   `$$$$ $$$$$%$s²"`_  $$$$$  `"""" od$$$bo. $$$$l' `$$$$,`$$$$$"²╙'     $$$$l' `$$$$,
+    $$$$,$"'"   $$$$$   ,$$$$ $$$$iP²╙$$$$$,$$$$$$       .l$$$i   $$$$$   $$$$$ l$$$i         $$$$,   $$$$$
+    $$$$$s.,$$$$$$$$$$  $$$$$ $$$$$   `$$$$$$$$$$$       $$$$$$,o.$$$$$ .,$$$$  $$$$$, _,b$$$$$$$$$s.,$$$$ 
+    `²$$$$$$$²' `²$$$  $$$$$ $$$$$   ,$$$$$`$²$$$       4$$$$$$b)$$$$$ $$$$²'  $$$$$$Sb$$$$$' `²$$$$$$$²' 
+        `"²"`           `²$ⁿ' `²$$$  ,$$$$$'  `""         `4$$$$" $$$$$ `$`     `²$²"^²$$$²'      `"²"`    
+                                    gV$$²'                       $$$$$                                    
+                                                                    $$$$$                                    
+                                                                    $$$$$                                     ''')
+    print("-- ENKRIPTO v.0.2 --\ntype 'help' to see a list of commands or a command's function")
 
 #MADE IN A DAY - EXPECT ERRORS AND BUGS
 
@@ -366,6 +372,46 @@ def checkForInt(item: str):
 
 
 
+def testEncryption():
+    print("TRunning diagnostics...")
+    old_stdout=sys.stdout
+    sys.stdout=open(os.devnull,"w")
+    try:
+        makeLibrary()
+        global library
+        encodeThis = execute("encrypt", "Hello World! 0.7&3 <- hope that works...", library,True)
+        decodeThat = execute("decipher", encodeThis, library, False)
+    except Exception as e:
+        sys.stdout=old_stdout
+        print(f"FATAL ERROR FOUND: {e}")
+        print("This Release will thus not run.")
+        print("PLEASE REPORT THIS ERROR ON GITHUB ISSUES!")
+        print("the program will close in 5 seconds...")
+        time.sleep(5)
+        exit()
+    if decodeThat != "Hello World! 0.7&3 <- hope that works...":
+        sys.stdout=old_stdout
+        print("EXCEPTION FOUND: Incorrect decoding results")
+        print("This Release will thus not run.")
+        print("PLEASE REPORT THIS ERROR ON GITHUB ISSUES!")
+        print("the program will close in 5 seconds...")
+        print(encodeThis)
+        print(decodeThat)
+        time.sleep(5)
+        exit()
+    sys.stdout=old_stdout
+    print("Testing completed successfully!")
+    global SeedInUse1,importseed,packerLibrary
+    del SeedInUse1,importseed,packerLibrary
+    library=""
+
+fetchPreferences()
+time.sleep(0.25)
+testEncryption()
+time.sleep(0.25)
+intro()
+
+
 #   @0@@@@@@    @@@@@@   @@@@@@@    @@@@@@   @@@@@@@@  @@@@@@@        
 #   @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@@@@@   @@@@@@@@  @@@@@@@@       
 #   @@!  @@@  @@!  @@@  @@!  @@@  !@@       @@!       @@!  @@@       
@@ -376,7 +422,6 @@ def checkForInt(item: str):
 #   :!:       :!:  !:!  :!:  !:!      !:!   :!:       :!:  !:!  :!:  
 #    ::       ::   :::  ::   :::  :::: ::    :: ::::  ::   :::  :::  
 #    :         :   : :   :   : :  :: : :    : :: ::    :   : :  :::  
-
 
 while True:
     prompt = input("NHH: awaiting input >  ")

@@ -1,26 +1,44 @@
 import random
 import os
+import json
+import time
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
 else:
     os.system("printf '\\033[8;100;120t'")
 preferenceIdol = ["Default.txt,","1","0"]
 try:
-    with open("preferences.txt","r",encoding="utf-8") as file:
-        Preferences = file.read()
+    print("fetching preferences...")
+    with open("preferences.json","r") as file:
+        Preferences = json.load(file)
 except FileNotFoundError:
-    print("no Preferences.txt found. Creating new with default values.")
-    with open("preferences.txt","w",encoding="utf-8") as file:
-        file.write("Default.txt/1/0")
-        Preferences = "Default.txt/1/0"
+    print("no Preferences.json found. Creating new with default values...")
+    with open("preferences.json","w") as file:
+        json.dump({"filelocation":"Default.txt",
+                   "createnew": 1,
+                   "readfromtxt": 0},file,indent=4)
+        Preferences = {"filelocation":"Default.txt",
+                       "createnew": 1,
+                       "readfromtxt": 0}
+except json.JSONDecodeError:
+        print("no Preferences.json contains invalid JSON. restoring default values...")
+        with open("preferences.json","w") as file:
+            json.dump({"filelocation":"Default.txt",
+                       "createnew": 1,
+                       "readfromtxt": 0},file,indent=4)
+            Preferences = {"filelocation":"Default.txt",
+                           "createnew": 1,
+                           "readfromtxt": 0}
 def defaultpref():
     global preference
-    print("invalid preferences.txt provided. Setting default values...")
-    with open("preferences.txt","w",encoding="utf-8") as file:
-        file.write("Default.txt/1/0")
+    print("invalid preferences.json provided. Setting default values...")
+    with open("preferences.json","w") as file:
+        json.dump({"filelocation":"Default.txt",
+                   "createnew": 1,
+                   "readfromtxt": 0},file,indent=4)
         preference = ["Default.txt","1","0"]
-if len(Preferences.split("/")) == 3:
-    preference = Preferences.split("/")
+if len(Preferences) == 3:
+    preference = Preferences.values()
 else:
     defaultpref()
 indexCounter=0
@@ -31,12 +49,12 @@ for i in preference:
             fileLocation:str = i
         else:
             print(f"invalid preference '{i}'. Using default value...")
-            with open("preferences.txt","w",encoding="utf-8") as file:
-                preference[0] = "Default.txt"
-                file.write("/".join(preference))
+            with open("preferences.json","w") as file:
+                Preferences["filelocation"] = "Default.txt"
+                json.dump(Preferences,file,indent=4)
             fileLocation = "Default.txt"
     elif indexCounter ==2 or indexCounter==3:
-        if i == "1" or i=="0":
+        if i == 1 or i==0:
             if indexCounter==2:
                 createNew = bool(int(i))
             else:
@@ -44,16 +62,19 @@ for i in preference:
         else:
             print(f"invalid preference '{i}'. Using default value...")
             if indexCounter==2:
-                with open("preferences.txt","w",encoding="utf-8") as file:
-                    preference[1] = "1"
-                    file.write("/".join(preference))
+                with open("preferences.json","w") as file:
+                    Preferences["createnew"] = 1
+                    json.dump(Preferences,file,indent=4)
                 createNew = True
             else:
                 print(f"invalid preference '{i}'. Using default value...")
-                with open("preferences.txt","w",encoding="utf-8") as file:
-                    preference[2] = "0"
-                    file.write("/".join(preference))
+                with open("preferences.json","w") as file:
+                    Preferences["readfromtxt"] = 0
+                    json.dump(Preferences,file,indent=4)
                 readFromtxt=False
+print("preferences imported!")
+
+time.sleep(0.5)
 
 normallibrary="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/()?`+*~#'<>|²³}]{[.-;_: ="
 throwawaylibrary=normallibrary
@@ -377,7 +398,7 @@ while True:
         print('refrain from using any quotation marks in your prompts. strings are interpreted as such by default and will thus end up containing extra quotations mark in them, making them uninterpretable. if you set your seed to importseed = "123.456.789", the value will be ""123.456.789"".\n')
         print("the underscore ( _ ) can be left out in parameter names ( seed_ispacked = seedispacked )\n")
         print("If parameters are not provided ENKRIPTO will vent to defaults \n")
-        print("startup preferences are stored in preferences.txt")
+        print("startup preferences are stored in preferences.json")
         print("-- COMMANDS --\n")
         print("resetfile - resets the txt file to default values\n")
         print("initiate / init {createnew: bool} , {readfromtxt: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool} - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
@@ -480,18 +501,18 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
-                        with open("Preferences.txt","w",encoding="utf-8") as file:
-                            preference[1] = "1" if createNew else "0"
-                            file.write("/".join(preference))
+                        with open("Preferences.json","w") as file:
+                            Preferences["createnew"] = 1 if createNew else 0
+                            json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("readfromtxt="):
                     if checkForBool(i.replace(" ","")) is not None:
                         readFromtxt =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromtxt = {readFromtxt}")
-                        with open("Preferences.txt","w",encoding="utf-8") as file:
-                            preference[2] = "1" if readFromtxt else "0"
-                            file.write("/".join(preference))
+                        with open("Preferences.json","w") as file:
+                            Preferences["readfromtxt"] = 1 if readFromtxt else 0
+                            json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("custompackerlibrary=") or i.replace(" ","").startswith("custom_packerlibrary="):
@@ -530,9 +551,9 @@ while True:
                 elif i.replace(" ","").startswith("filelocation="):
                     fileLocation = i.replace(" ","").split("=",1)[1]
                     modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                    with open("Preferences.txt","w",encoding="utf-8") as file:
-                        preference[0] = fileLocation
-                        file.write("/".join(preference))
+                    with open("Preferences.json","w") as file:
+                        Preferences["filelocation"] = fileLocation
+                        json.dump(Preferences,file,indent=4)
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -576,6 +597,7 @@ while True:
         print("defaults restored!")
     elif prompt.lower() == "exit":
         print("See you next time!")
+        time.sleep(0.75)
         exit()
     elif prompt.lower().startswith("save") or prompt.lower().startswith("write"):
         params = prompt.lower().removeprefix("save").replace(" ","").split(",") if prompt.lower().startswith("save") else prompt.lower().removeprefix("write").replace(" ","").split(",")
@@ -589,9 +611,9 @@ while True:
                 if i.replace(" ","").startswith("filelocation="):
                     fileLocation = i.replace(" ","").split("=",1)[1]
                     modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                    with open("Preferences.txt","w",encoding="utf-8") as file:
-                        preference[0] = fileLocation
-                        file.write("/".join(preference))
+                    with open("Preferences.json","w") as file:
+                        Preferences["filelocation"] = fileLocation
+                        json.dump(Preferences,file,indent=4)
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -646,9 +668,9 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
-                        with open("Preferences.txt","w",encoding="utf-8") as file:
-                            preference[1] = "1" if createNew else "0"
-                            file.write("/".join(preference))
+                        with open("Preferences.json","w") as file:
+                            Preferences["createnew"] = 1 if createNew else 0
+                            json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("packmyseed=") or i.replace(" ","").startswith("pack="):
@@ -658,9 +680,9 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:                        
                         readFromtxt =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromtxt = {readFromtxt}")
-                        with open("Preferences.txt","w",encoding="utf-8") as file:
-                            preference[2] = "1" if readFromtxt else "0"
-                            file.write("/".join(preference))
+                        with open("Preferences.json","w") as file:
+                            preference[2] = 1 if readFromtxt else 0
+                            json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("custompackerlibrary=") or i.replace(" ","").startswith("custom_packerlibrary="):
@@ -706,9 +728,9 @@ while True:
                 elif i.replace(" ","").startswith("filelocation="):
                     fileLocation = i.replace(" ","").split("=",1)[1]
                     modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                    with open("Preferences.txt","w",encoding="utf-8") as file:
-                        preference[0] = fileLocation
-                        file.write("/".join(preference))
+                    with open("Preferences.json","w") as file:
+                        Preferences["filelocation"] = fileLocation
+                        json.dump(Preferences,file,indent=4)
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:

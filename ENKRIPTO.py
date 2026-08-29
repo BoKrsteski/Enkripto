@@ -1,7 +1,60 @@
 import random
 import os
-os.system("mode con: cols=120 lines=100")
-os.system("color 04")
+if os.name == "nt":
+    os.system("mode con: cols=120 lines=100")
+else:
+    os.system("printf '\\033[8;100;120t'")
+preferenceIdol = ["Default.txt,","1","0"]
+try:
+    with open("preferences.txt","r",encoding="utf-8") as file:
+        Preferences = file.read()
+except FileNotFoundError:
+    print("no Preferences.txt found. Creating new with default values.")
+    with open("preferences.txt","w",encoding="utf-8") as file:
+        file.write("Default.txt/1/0")
+        Preferences = "Default.txt/1/0"
+def defaultpref():
+    global preference
+    print("invalid preferences.txt provided. Setting default values...")
+    with open("preferences.txt","w",encoding="utf-8") as file:
+        file.write("Default.txt/1/0")
+        preference = ["Default.txt","1","0"]
+if len(Preferences.split("/")) == 3:
+    preference = Preferences.split("/")
+else:
+    defaultpref()
+indexCounter=0
+for i in preference:
+    indexCounter +=1
+    if indexCounter == 1:
+        if i.endswith(".txt"):
+            fileLocation:str = i
+        else:
+            print(f"invalid preference '{i}'. Using default value...")
+            with open("preferences.txt","w",encoding="utf-8") as file:
+                preference[0] = "Default.txt"
+                file.write("/".join(preference))
+            fileLocation = "Default.txt"
+    elif indexCounter ==2 or indexCounter==3:
+        if i == "1" or i=="0":
+            if indexCounter==2:
+                createNew = bool(int(i))
+            else:
+                readFromtxt=bool(int(i))
+        else:
+            print(f"invalid preference '{i}'. Using default value...")
+            if indexCounter==2:
+                with open("preferences.txt","w",encoding="utf-8") as file:
+                    preference[1] = "1"
+                    file.write("/".join(preference))
+                createNew = True
+            else:
+                print(f"invalid preference '{i}'. Using default value...")
+                with open("preferences.txt","w",encoding="utf-8") as file:
+                    preference[2] = "0"
+                    file.write("/".join(preference))
+                readFromtxt=False
+
 normallibrary="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/()?`+*~#'<>|²³}]{[.-;_: ="
 throwawaylibrary=normallibrary
 library:str=""
@@ -45,14 +98,13 @@ print("-- ENKRIPTO v.0.2 --\ntype 'help' to see a list of commands or a command'
 # encryptionamount: amount of encryption layers
 # PackMySeed: if True, packs the seed before displaying. set this to True if you want an extra layer of encryption. This will encrypt and shuffle the seed with a custom or default library. if false, displays pure seed
 
-createNew: bool = True
-readFromtxt: bool = False
-custom_PackerLibrary: str = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN"
-importseed: str = r"171}8k1kSS}oW}8o}²8&k"
+
+custom_PackerLibrary: str = r""
+importseed: str = r""
 seed_ispacked: bool = True
 encryptionamount: int =random.randint(100,500) 
 packMySeed: bool = True
-fileLocation:str = "packerLibrary.txt"
+packerLibrary = None
 
 debug = False
 
@@ -63,7 +115,7 @@ def StopFunc(func: str):
 # use this to either reset or create the txt file with default values
 def resetFile():
     with open(fileLocation,"w",encoding="utf-8") as file:
-        file.write(r"171}8k1kSS}oW}8o}²8&k@O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN")
+        file.write(createLibrary(normallibrary,random.randint(1,9999999), "None"))
     print("file reset")
 
 # restores correct order in seeds.
@@ -97,7 +149,7 @@ def createLibrary(factor, seed1, state):
     return seedCreator
 
 #this function encrypts/decodes your messages!
-def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN", outputMode:bool = False):
+def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = createLibrary(normallibrary,random.randint(1,9999999), "None"), outputMode:bool = False):
     if method == "encrypt":
         encrypted_message = ""
         if outputMode:
@@ -113,7 +165,7 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = r"
             encrypted_message += library[location]
         if outputMode:
             print("encrypted message:")
-            return encrypted_message
+        return encrypted_message
     elif method == "decrypt" or method == "decipher":
         decrypted_message = ""
         if outputMode:
@@ -129,22 +181,37 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = r"
             decrypted_message += normallibrary[location]
         if outputMode:
             print("decoded message:")
-            return decrypted_message
+        return decrypted_message
     else:
         return print(f"invalid param '{method}'")
 
+
+#this function packs all seeds provided (see dictionary)
+#params:
+# UsedSeed: the seed you want to pack
+def packSeed(UsedSeed: str,outputMode: bool):
+    global packerLibrary
+    if packerLibrary is None:
+        packerLibrary = createLibrary(normallibrary , random.randint(100,9999999),"none")
+    encryptedSeed = execute("encrypt", UsedSeed, packerLibrary, False)
+    shuffleBy = random.randint(0, len(encryptedSeed)-1)
+    for e in range(shuffleBy):
+        encryptedSeed += encryptedSeed[0]
+        encryptedSeed = encryptedSeed[1:]
+    return "0" + str(shuffleBy) + encryptedSeed if len(str(shuffleBy)) == 1 else str(shuffleBy) + encryptedSeed
 # this is the initial creation and definition of important variables
 def makeLibrary():
     global SeedInUse1
     global importseed
     global library
+    global packerLibrary
     if createNew:
-        print("creating new seed...")
         library = createLibrary(normallibrary, random.randint(100,9999999), "init")
         createLibrary(library , random.randint(100,9999999) , "commercial")
         for i in range(encryptionamount):
             library = createLibrary(library , random.randint(100,9999999),"none")
         SeedInUse1 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
+        print("creating new seed...")
         print("layers:")
         print(encryptionamount)
         print("library in use:")
@@ -157,15 +224,18 @@ def makeLibrary():
                 with open(fileLocation,"r",encoding="utf-8") as file:
                     content = file.read()
                     importseed = content.split("@")[0]
-                    if seed_ispacked:
-                        packerLibrary = content.split("@")[1]
+                    packerLibrary = content.split("@")[1]
             except FileNotFoundError:
-                print("no packerLibrary file exists. creating new Default...")
+                print(f"no {fileLocation} file exists. creating new Default...")
                 with open(fileLocation,"w",encoding="utf-8") as file:
-                    file.write(r"171}8k1kSS}oW}8o}²8&k@O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN")
-                    importseed = "16{V*`{*fs`A;sV*;{{s{"
-                    if seed_ispacked:
-                        packerLibrary = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN"
+                    library = createLibrary(normallibrary, random.randint(100,9999999), "init")
+                    createLibrary(library , random.randint(100,9999999) , "commercial")
+                    for i in range(encryptionamount):
+                        library = createLibrary(library , random.randint(100,9999999),"none")
+                    SeedInUse1 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
+                    importseed=packseed(SeedInUse1,True)
+                    packerLibrary = createLibrary(normallibrary, random.randint(1000,9898),"None")
+                    file.write(importseed + "@" + packerLibrary)
             except IndexError:
                 print("ERROR in txtReader1 ; packerlibrary file format is invalid.")
                 StopFunc("init")
@@ -176,8 +246,9 @@ def makeLibrary():
                 if len(custom_PackerLibrary) == len(normallibrary):
                     packerLibrary = custom_PackerLibrary
                 else:
-                    print("no/invalid custom_PackerLibrary provided. creating new Default...")
-                    packerLibrary = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN"
+                    print("ERROR in custom_PackerLibrary reader ; custom_packerlibrary format is invalid.")
+                    StopFunc("init")
+                    return
         print("provided seed: " + importseed)
         if seed_ispacked:
             if cleanse(importseed) is not None:
@@ -186,12 +257,14 @@ def makeLibrary():
                 CleansedAndDecodedSeed = execute("decrypt", cleansedSeed,packerLibrary)
                 print("decoded seed: " + CleansedAndDecodedSeed)
             else:
+                print("ERROR in cleanseSeed ; invalid seed provided!")
                 StopFunc("init")
                 return
         try:
             getinitseed , getencryptionamount, getCommercialSeed = CleansedAndDecodedSeed.split(".") if seed_ispacked else cleansedSeed.split(".")
         except ValueError:
             print("ERROR in getSeedValues ; invalid seed provided!")
+            StopFunc("init")
             return
         try:
             getinitseed = int(getinitseed)
@@ -213,45 +286,6 @@ def makeLibrary():
         print("encryption layer amount:")
         print(encryptionamount)
 
-
-#this function packs all seeds provided (see dictionary)
-#params:
-# UsedSeed: the seed you want to pack
-def packSeed(UsedSeed: str,outputMode: bool):
-    global packerLibrary
-    if readFromtxt:
-        try:
-            with open(fileLocation,"r",encoding="utf-8") as file:
-                packerLibrary = file.read().split("@")[1]
-        except FileNotFoundError:
-            if outputMode:
-                print("no packerLibrary file exists. creating new Default...")
-            with open(fileLocation,"w",encoding="utf-8") as file:
-                file.write(r"171}8k1kSS}oW}8o}²8&k@O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN")
-                packerLibrary = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN"
-        except IndexError:
-            if outputMode:
-                print("ERROR in txtReader2 ; packerlibrary file format is invalid.")
-            return None 
-        else:
-            if outputMode:
-                print("invalid custom_PackerLibrary")
-            return None
-    elif len(custom_PackerLibrary) == len(normallibrary):
-        packerLibrary = custom_PackerLibrary
-    else:
-        if outputMode:
-            print("no custom_packerLibrary exists. creating new Default...")
-        with open(fileLocation,"w",encoding="utf-8") as file:
-            file.write(r"171}8k1kSS}oW}8o}²8&k@O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN")
-            packerLibrary = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZNy"
-    encryptedSeed = execute("encrypt", UsedSeed, packerLibrary)
-    shuffleBy = random.randint(0, len(encryptedSeed)-1)
-    for e in range(shuffleBy):
-        encryptedSeed += encryptedSeed[0]
-        encryptedSeed = encryptedSeed[1:]
-    return "0" + str(shuffleBy) + encryptedSeed if len(str(shuffleBy)) == 1 else str(shuffleBy) + encryptedSeed
-
 #displays the seed, duh. either packed or raw
 def displaySeed():
     print("displaying seed in use...")
@@ -259,6 +293,8 @@ def displaySeed():
         if packSeed(SeedInUse1,False) is not None:
             print("seed is packed:")
             print("--->   " + packSeed(SeedInUse1,False) + "   <---")
+            print("packerLibrary:")
+            print(packerLibrary)
         else:
             StopFunc("displayseed")
             return
@@ -268,7 +304,7 @@ def displaySeed():
 
 #transfers your current seed and packerlibrary to the txt file, overwrites previous values
 def writeToTXT():
-    print("writing packed seed and packerLibrary into packerlibrary.txt ...")
+    print(f"writing packed seed and packerLibrary into {fileLocation} ...")
     try:
         test = SeedInUse1
     except NameError:
@@ -284,7 +320,7 @@ def writeToTXT():
     else:
         StopFunc("save/write")
         return
-    print("successfully written data to txt")
+    print(f"successfully written data to {fileLocation}")
 
 def checkForBool(item: str):
     if item.split("=")[1] == "true" or item.split("=",1)[1] == "1":
@@ -341,6 +377,7 @@ while True:
         print('refrain from using any quotation marks in your prompts. strings are interpreted as such by default and will thus end up containing extra quotations mark in them, making them uninterpretable. if you set your seed to importseed = "123.456.789", the value will be ""123.456.789"".\n')
         print("the underscore ( _ ) can be left out in parameter names ( seed_ispacked = seedispacked )\n")
         print("If parameters are not provided ENKRIPTO will vent to defaults \n")
+        print("startup preferences are stored in preferences.txt")
         print("-- COMMANDS --\n")
         print("resetfile - resets the txt file to default values\n")
         print("initiate / init {createnew: bool} , {readfromtxt: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool} - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
@@ -362,12 +399,11 @@ while True:
         print("parameters:\n")
         print("NAME:\ncreatenew\nTYPE:\nBool\nUSECASE:\nif set to True, an entirely new seed and library will be generated in the initiation process. given data like readfromtxt, importseed, custompackerlibrary and more will be ignored, however params used solely for creation like encryptionamount will be utilized. If it is set to False, the initiation process will try to import any given values. It will first check if readfromtxt is enabled (if so it will import the values from the .txt file) and then check for custom values (if none exist, hardcoded default values will be used. I advise against this, because encrypto relies on the diversity of it's encryption schemes, so using a singular fixed library and/or seed might bring up safety issues.)")
         print("\nNAME:\nreadfromtxt\nTYPE:\nBool\nUSECASE:\nif set to True (and createnew is set to false), values will be read from the provided .txt file")
-        print("\nNAME:\nfilelocation\nTYPE:\nString\nUSECASE:\nthe .txt seed-data file's path. the default is 'packerLibrary.txt' but you can expand the path in any way or even provide a file in a completely different directory.")
         print("\nNAME:\nimportseed\nTYPE:\nString\nUSECASE:\nparameter used for manual import of a seed. If you insert a packed seed, you must enable seed_ispacked and vice versa. Otherwhise the program will fail. NOTE that it is suggested to not use any spaces when defining this parameter (parameter=value)")
         print("\nNAME:\ncustom_packerlibrary\nTYPE:\nString\nUSECASE:\nparameter used for manual import of the library used to pack the manually imported seed. This parameter is only necessary if the seed you manually provided is packed.  NOTE that it is suggested to not use any spaces when defining this parameter (parameter=value)")
         print("\nNAME:\nseed_ispacked\nTYPE:\nBool\nUSECASE:\nIf you manually import a seed, you will have to set seed_ispacked to the corresponding value depending on if it is packed or not. if the provided seed is packed : seed_ispacked = True ; if it is not packed : seed_ispacked = False")
         print("\nNAME:\nencryptionamount\nTYPE:\nInt\nUSECASE:\nparameter that defines the amount of times your library will encrypt itself. This param is only used when creating a new library and it's default is a random integer.")
-        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted txt. This can be an absolute path (C:\myprojects/txtfiles/save.txt) or a relative path (txtfiles/save.txt (if you are currently in the myprojects directory)). If you don't have a txt yet, one will be created for you if you execute the 'save' command after initiating")
+        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted txt. This can be an absolute path (C:\\myprojects/txtfiles/save.txt) or a relative path (txtfiles/save.txt (if you are currently in the myprojects directory)). If you don't have a txt yet, one will be created for you if you execute the 'save' or 'write' command after initiating")
     elif prompt.lower() == "help list":
         print("-- LIST OF ALL COMMANDS WITH HELP DATA --\n")
         print("01 - INIT(IATE)\n")
@@ -376,8 +412,8 @@ while True:
         print("04 - LIBRARIES\n")
         print("-- MORE TO COME --")
     elif prompt.lower() == "explain":
-        print("ENKRIPTO tutorial:")
-        print("https://youtu.be/76r2yHeQkC8")
+        print("official ENKRIPTO youtube tutorial:\n https://youtu.be/76r2yHeQkC8")
+        print("official ENKRIPTO documentation page:\n https://bokrsteski.github.io/Enkripto/")
         ######################
         #PARAM RELATED TOPICS#
         ######################
@@ -386,7 +422,7 @@ while True:
         print("SAVE / WRITE FUNCTION:\n")
         print("general info:\nthe save function saves your current seed in it's packed form and the library used to pack it in a .txt file of your choice. This allows for easier sharing of your seed-data, so that others can decode your previously encrypted messages easier.\n")
         print("parameters:")
-        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted txt. This can be an absolute path (C:\myprojects/txtfiles/save.txt) or a relative path (txtfiles/save.txt (if you are currently in the myprojects directory)). If you don't have a txt yet, one will be created for you if you execute the 'save' command after initiating")
+        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted txt. This can be an absolute path (C:\\myprojects/txtfiles/save.txt) or a relative path (txtfiles/save.txt (if you are currently in the myprojects directory)). If you don't have a txt yet, one will be created for you if you execute the 'save' command after initiating")
     elif prompt.lower() == "help seeds":
         print("-- ADVANCED HELP MENU - ENTRY 03 --\n")
         print("SEEDS:\n")
@@ -444,12 +480,18 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
+                        with open("Preferences.txt","w",encoding="utf-8") as file:
+                            preference[1] = "1" if createNew else "0"
+                            file.write("/".join(preference))
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("readfromtxt="):
                     if checkForBool(i.replace(" ","")) is not None:
                         readFromtxt =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromtxt = {readFromtxt}")
+                        with open("Preferences.txt","w",encoding="utf-8") as file:
+                            preference[2] = "1" if readFromtxt else "0"
+                            file.write("/".join(preference))
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("custompackerlibrary=") or i.replace(" ","").startswith("custom_packerlibrary="):
@@ -488,6 +530,9 @@ while True:
                 elif i.replace(" ","").startswith("filelocation="):
                     fileLocation = i.replace(" ","").split("=",1)[1]
                     modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                    with open("Preferences.txt","w",encoding="utf-8") as file:
+                        preference[0] = fileLocation
+                        file.write("/".join(preference))
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -513,12 +558,19 @@ while True:
     elif prompt.lower() =="restoredefaults" or prompt.lower() == "default" or prompt.lower() == "defaults":
         createNew = True
         readFromtxt = False
-        custom_PackerLibrary = r"O~m]c&³?b3v|$1a(<j%!xY/By2+{:;P=4`_r8l}hCitW.fgKow>F[LkzqA7ßVIJQ6'D-usUd9EHRTGS0 n²#Xe5)*§pMZN"
-        importseed = r"171}8k1kSS}oW}8o}²8&k"
+
+        library1 = createLibrary(normallibrary, random.randint(100,9999999), "init")
+        createLibrary(library1 , random.randint(100,9999999) , "commercial")
+        for i in range(encryptionamount):
+            library1 = createLibrary(library1 , random.randint(100,9999999),"none")
+        global commercialseed
+        global initseed
+        SeedInUse2 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
+        importseed=packseed(SeedInUse2,True)
+        custom_packerLibrary = createLibrary(normallibrary, random.randint(1000,9898),"None")
         seed_ispacked = True
         encryptionamount =random.randint(100,500) 
         packMySeed = True
-        fileLocation = "packerLibrary.txt"
         print("defaulting...\nsome true values are excluded due to their length:")
         print(f"createnew = {createNew} \nreadfromtxt = {readFromtxt}\ncustom_packerlibrary = (default value)\nimportseed = (defaultvalue)\nseed_ispacked = {seed_ispacked}\nencryptionamount = {encryptionamount} (randomized)\npackmyseed = {packMySeed}\nfilelocation = {fileLocation}")
         print("defaults restored!")
@@ -537,6 +589,9 @@ while True:
                 if i.replace(" ","").startswith("filelocation="):
                     fileLocation = i.replace(" ","").split("=",1)[1]
                     modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                    with open("Preferences.txt","w",encoding="utf-8") as file:
+                        preference[0] = fileLocation
+                        file.write("/".join(preference))
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -591,6 +646,9 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
+                        with open("Preferences.txt","w",encoding="utf-8") as file:
+                            preference[1] = "1" if createNew else "0"
+                            file.write("/".join(preference))
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("packmyseed=") or i.replace(" ","").startswith("pack="):
@@ -600,6 +658,9 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:                        
                         readFromtxt =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromtxt = {readFromtxt}")
+                        with open("Preferences.txt","w",encoding="utf-8") as file:
+                            preference[2] = "1" if readFromtxt else "0"
+                            file.write("/".join(preference))
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("custompackerlibrary=") or i.replace(" ","").startswith("custom_packerlibrary="):
@@ -645,6 +706,9 @@ while True:
                 elif i.replace(" ","").startswith("filelocation="):
                     fileLocation = i.replace(" ","").split("=",1)[1]
                     modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                    with open("Preferences.txt","w",encoding="utf-8") as file:
+                        preference[0] = fileLocation
+                        file.write("/".join(preference))
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -706,6 +770,8 @@ while True:
                     paramexception = True
         else:
             print("no target message provided. aborting...")
+
+
 # createNew = True
 # readFromtxt = False
 # custom_PackerLibrary = "$M+EIaA{5ßGCWxL-2mhBqkjX 8?(d6SO4p]\;zw²eo)u_<l|!§tFVQ[R.v'>`TZ=P#³r3/}NK:bH1~&UJsDY*g,7i%n90fcy"

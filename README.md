@@ -80,6 +80,9 @@ The releases contain the platform specific builds as well as SHA 256 checksums.
 
 The Linux version is provided as a `.tar.gz` archive containing the Enkripto executable.
 
+## Contributors
+
+Just me, Bo Krsteski. A 16 year old student who loves to make little programs in his freetime.
 ## Project Status
 
 **Current version: `v1.1.0`**

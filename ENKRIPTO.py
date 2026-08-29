@@ -373,7 +373,7 @@ def checkForInt(item: str):
 
 
 def testEncryption():
-    print("TRunning diagnostics...")
+    print("Running diagnostics...")
     old_stdout=sys.stdout
     sys.stdout=open(os.devnull,"w")
     try:

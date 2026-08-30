@@ -102,7 +102,7 @@ def intro():
                                     gV$$²'                       $$$$$                                    
                                                                     $$$$$                                    
                                                                     $$$$$                                     ''')
-    print("-- ENKRIPTO v.0.2 --\ntype 'help' to see a list of commands or a command's function")
+    print("-- ENKRIPTO v2.2.1 --\ntype 'help' to see a list of commands or a command's function")
 
 #MADE IN A DAY - EXPECT ERRORS AND BUGS
 

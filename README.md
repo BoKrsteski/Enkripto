@@ -85,7 +85,7 @@ The Linux version is provided as a `.tar.gz` archive containing the Enkripto exe
 Just me, Bo Krsteski. A 16 year old student who loves to make little programs in his freetime.
 ## Project Status
 
-**Current version: `v1.1.0`**
+**Current version: `v1.2.1`**
 
 Enkripto is still actively being developed.
 

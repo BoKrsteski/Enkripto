@@ -99,9 +99,9 @@ def intro():
     $$$$$s.,$$$$$$$$$$  $$$$$ $$$$$   `$$$$$$$$$$$       $$$$$$,o.$$$$$ .,$$$$  $$$$$, _,b$$$$$$$$$s.,$$$$ 
     `²$$$$$$$²' `²$$$  $$$$$ $$$$$   ,$$$$$`$²$$$       4$$$$$$b)$$$$$ $$$$²'  $$$$$$Sb$$$$$' `²$$$$$$$²' 
         `"²"`           `²$ⁿ' `²$$$  ,$$$$$'  `""         `4$$$$" $$$$$ `$`     `²$²"^²$$$²'      `"²"`    
-                                    gV$$²'                       $$$$$                                    
-                                                                    $$$$$                                    
-                                                                    $$$$$                                     ''')
+                                     gV$$²'                       $$$$$                                    
+                                                                  $$$$$                                    
+                                                                  $$$$$                                     ''')
     print("-- ENKRIPTO v.0.2 --\ntype 'help' to see a list of commands or a command's function")
 
 #MADE IN A DAY - EXPECT ERRORS AND BUGS
@@ -277,7 +277,6 @@ def makeLibrary():
                             return
                         importseed = filecontent[7+lOFl_seed+lOFl_libr:7+lOFl_seed+lOFl_libr+seedLen]
                         packerLibrary = filecontent[7+lOFl_seed+lOFl_libr+seedLen:7+lOFl_seed+lOFl_libr+seedLen+librLen]
-#TODO
             except FileNotFoundError:
                 print(f"no {fileLocation} file exists. creating new Default...")
                 with open(fileLocation,"w") as file:
@@ -365,7 +364,7 @@ def displaySeed():
         print(SeedInUse1)
 
 #transfers your current seed and packerlibrary to the txt file, overwrites previous values
-def writeToTXT():
+def writeToENK():
     print(f"writing packed seed and packerLibrary into {fileLocation} ...")
     try:
         test = SeedInUse1
@@ -733,7 +732,7 @@ while True:
         else:
             if len(params) > 0 and params[0] != "":
                 print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
-            writeToTXT()
+            writeToENK()
     elif prompt.lower().startswith("displayseed") or prompt.lower().startswith("display"):
         params = prompt.lower().removeprefix("displayseed").replace(" ","").split(",") if prompt.lower().startswith("displayseed") else prompt.lower().removeprefix("display").replace(" ","").split(",")
         if debug:
@@ -875,7 +874,6 @@ while True:
                 if i.replace(" ","").startswith("msg="):
                     if library != "":
                         print("encrypting...")
-                        print("ENCRYPTED MESSAGE:")
                         print(execute("encrypt", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True))
                     else:
                         print("no current library exists! Please initiate first.")
@@ -919,7 +917,6 @@ while True:
                 if i.replace(" ","").startswith("msg="):
                     if library != "":
                         print("decoding...")
-                        print("DECODED MESSAGE:")
                         print(execute("decipher", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True))
                     else:
                         print("no current library exists! Please initiate first.")

@@ -1183,7 +1183,7 @@ footer{
         <p>
           Use <span class="inline">save</span> or
           <span class="inline">write</span> to store the current seed
-          data in a text file.
+          data in an .enk file.
         </p>
 
       </div>
@@ -1284,7 +1284,7 @@ footer{
 
   <p>
     Enkripto can store a small set of startup preferences in
-    <span class="inline">preferences.txt</span>.
+    <span class="inline">preferences.json</span>.
     These preferences control how initialization behaves the next time
     you use the program.
   </p>
@@ -1302,7 +1302,7 @@ footer{
       <p>
         The current persistent preferences are
         <span class="inline">createNew</span>,
-        <span class="inline">readFromtxt</span>,
+        <span class="inline">readFromENK</span>,
         and <span class="inline">fileLocation</span>.
       </p>
 
@@ -1318,8 +1318,8 @@ footer{
       <p>
         If no saved preference overrides them, Enkripto starts with
         <span class="inline">createNew=True</span>,
-        <span class="inline">readFromtxt=False</span>,
-        and <span class="inline">fileLocation=default.txt</span>.
+        <span class="inline">readFromENK=False</span>,
+        and <span class="inline">fileLocation=Default.enk</span>.
       </p>
 
     </article>
@@ -1337,16 +1337,18 @@ footer{
       <i class="dot"></i>
 
       <span class="tt">
-        PREFERENCES.TXT
+        PREFERENCES.JSON
       </span>
 
     </div>
 
 
     <pre><span class="comment"># Example preferences</span>
-createNew=True
-readFromtxt=False
-fileLocation=default.txt
+{
+  "createNew" : True,
+  "readFromENK": False,
+  "fileLocation": "Default.txt"
+}
 
 <span class="comment"># Because createNew defaults to True:</span>
 <span class="prompt">&gt;</span> init</pre>
@@ -1359,7 +1361,7 @@ fileLocation=default.txt
     <p>
       <strong>Important:</strong>
       Preferences and seed data are separate.
-      <span class="inline">preferences.txt</span> stores startup settings;
+      <span class="inline">preferences.json</span> stores startup settings;
       seed data is handled separately through the save/import workflow.
     </p>
 

@@ -1590,9 +1590,9 @@ dfsizt2u673598$&amp;</pre>
     </div>
 
 
-    <pre><span class="prompt">&gt;</span> setparams createnew=True, encryptionamount=3
+    <pre><span class="prompt">&gt;</span> setparams createnew=True, encryptionamount=999
 
-<span class="prompt">&gt;</span> encrypt msg=Hello World
+<span class="prompt">&gt;</span> encrypt target=hi.txt
 
 <span class="comment"># parameter order does not matter</span>
 <span class="prompt">&gt;</span> setparams encryptionamount=3, createnew=True</pre>
@@ -1668,7 +1668,7 @@ dfsizt2u673598$&amp;</pre>
 
     <div class="cmd">
       <code>save / write</code>
-      <p>Packs and saves the current seed to a text file.</p>
+      <p>Packs and saves the current seed to an .enk file.</p>
     </div>
 
     <div class="cmd">
@@ -1698,12 +1698,12 @@ dfsizt2u673598$&amp;</pre>
 
     <div class="cmd">
       <code>encrypt / encode</code>
-      <p>Encrypts the provided target message using the current library.</p>
+      <p>Encrypts the provided target message or text file using the current library.</p>
     </div>
 
     <div class="cmd">
       <code>decipher / decode</code>
-      <p>Decodes the provided target message using the current library.</p>
+      <p>Decodes the provided target message or text file using the current library.</p>
     </div>
 
     <div class="cmd">
@@ -1747,15 +1747,15 @@ dfsizt2u673598$&amp;</pre>
     </div>
 
     <div class="param">
-      <code>readfromtxt</code>
+      <code>readfromENK</code>
       <span class="type">bool</span>
-      <span>Whether values should be read from a text file during initialization.</span>
+      <span>Whether values should be read from an .enk file during initialization.</span>
     </div>
 
     <div class="param">
       <code>filelocation</code>
       <span class="type">str</span>
-      <span>Path to the text file used for seed data. Default: <strong>default.txt</strong>.</span>
+      <span>Path to the .enk file used for seed data. Default: <strong>Default.enk</strong>.</span>
     </div>
 
     <div class="param">
@@ -1803,7 +1803,7 @@ dfsizt2u673598$&amp;</pre>
     <div class="param">
       <code>msg / target</code>
       <span class="type">str</span>
-      <span>The message or target supplied to encryption/decoding commands.</span>
+      <span>The message or target file supplied to encryption/decoding commands. Use msg to directly provide text and target to provide a file path</span>
     </div>
 
   </div>
@@ -1854,13 +1854,14 @@ dfsizt2u673598$&amp;</pre>
 <span class="prompt">&gt;</span> encrypt msg=Meet me at 8
 
 <span class="comment"># 3. Save the seed data</span>
-<span class="prompt">&gt;</span> save filelocation=save.txt
+<span class="prompt">&gt;</span> save filelocation=save.enk
 
 <span class="comment"># 4. Later, restore/import the seed data</span>
 <span class="prompt">&gt;</span> init readfromtxt=True, filelocation=save.txt
 
 <span class="comment"># 5. Decode using the restored configuration</span>
 <span class="prompt">&gt;</span> decipher msg=&lt;encrypted-message&gt;</pre>
+<span class="comment"># you can also directly en/ decode files using the target parameter (e.g encode target = test.txt)
 
   </div>
 

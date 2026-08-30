@@ -16,7 +16,7 @@ def fetchPreferences():
         with open("preferences.json","r") as file:
             Preferences = json.load(file)
     except FileNotFoundError:
-        print("no Preferences.json found. Creating new with default values...")
+        print("no preferences.json found. Creating new with default values...")
         with open("preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
@@ -25,7 +25,7 @@ def fetchPreferences():
                         "createnew": 1,
                         "readfromENK": 0}
     except json.JSONDecodeError:
-            print("no Preferences.json contains invalid JSON. restoring default values...")
+            print("no preferences.json contains invalid JSON. restoring default values...")
             with open("preferences.json","w") as file:
                 json.dump({"filelocation":"Default.enk",
                         "createnew": 1,
@@ -590,7 +590,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             Preferences["createnew"] = 1 if createNew else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -599,7 +599,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         readFromENK =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromENK = {readFromENK}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             Preferences["readfromENK"] = 1 if readFromENK else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -641,7 +641,7 @@ while True:
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
@@ -710,7 +710,7 @@ while True:
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
@@ -775,7 +775,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             Preferences["createnew"] = 1 if createNew else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -787,7 +787,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:                        
                         readFromENK =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromENK = {readFromENK}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             preference[2] = 1 if readFromENK else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -836,7 +836,7 @@ while True:
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("Preferences.json","w") as file:
+                        with open("preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:

@@ -42,7 +42,7 @@ This also makes Enkripto usable in situations where there is no internet connect
 
 ## Possible Use Cases
 
-Enkripto can be used to experiment with locally performed encryption and to work with information that should stay on the local machine.
+Enkripto can be used to communicate safely per file or text transfer. there's many way so transfer encrypted data. you could send the encrypted text or file via a messenger of your liking, transfer the file via USB and more.
 
 It can also be interesting for people who want to experiment with different ideas around randomness and encryption.
 

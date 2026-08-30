@@ -9,7 +9,8 @@ if os.name == "nt":
 else:
     os.system("printf '\\033[8;100;120t'")
 def fetchPreferences():
-    preferenceIdol = ["Default.txt,",1,0]
+    global Preferences
+    preferenceIdol = ["Default.enk,",1,0]
     try:
         print("fetching preferences...")
         with open("preferences.json","r") as file:
@@ -17,28 +18,28 @@ def fetchPreferences():
     except FileNotFoundError:
         print("no Preferences.json found. Creating new with default values...")
         with open("preferences.json","w") as file:
-            json.dump({"filelocation":"Default.txt",
+            json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
-                    "readfromtxt": 0},file,indent=4)
-            Preferences = {"filelocation":"Default.txt",
+                    "readfromENK": 0},file,indent=4)
+            Preferences = {"filelocation":"Default.enk",
                         "createnew": 1,
-                        "readfromtxt": 0}
+                        "readfromENK": 0}
     except json.JSONDecodeError:
             print("no Preferences.json contains invalid JSON. restoring default values...")
             with open("preferences.json","w") as file:
-                json.dump({"filelocation":"Default.txt",
+                json.dump({"filelocation":"Default.enk",
                         "createnew": 1,
-                        "readfromtxt": 0},file,indent=4)
-                Preferences = {"filelocation":"Default.txt",
+                        "readfromENK": 0},file,indent=4)
+                Preferences = {"filelocation":"Default.enk",
                             "createnew": 1,
-                            "readfromtxt": 0}
+                            "readfromENK": 0}
     def defaultpref():
         global preference
         print("invalid preferences.json provided. Setting default values...")
         with open("preferences.json","w") as file:
-            json.dump({"filelocation":"Default.txt",
+            json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
-                    "readfromtxt": 0},file,indent=4)
+                    "readfromENK": 0},file,indent=4)
             preference = preferenceIdol
     if len(Preferences) == 3:
         preference = Preferences.values()
@@ -49,22 +50,22 @@ def fetchPreferences():
         indexCounter +=1
         if indexCounter == 1:
             global fileLocation
-            if i.endswith(".txt"):
+            if i.endswith(".enk"):
                 fileLocation = i
             else:
                 print(f"invalid preference '{i}'. Using default value...")
                 with open("preferences.json","w") as file:
-                    Preferences["filelocation"] = "Default.txt"
+                    Preferences["filelocation"] = "Default.enk"
                     json.dump(Preferences,file,indent=4)
-                fileLocation = "Default.txt"
+                fileLocation = "Default.enk"
         elif indexCounter ==2 or indexCounter==3:
-            global readFromtxt
+            global readFromENK
             global createNew
             if i == 1 or i==0:
                 if indexCounter==2:
                     createNew = bool(int(i))
                 else:
-                    readFromtxt=bool(int(i))
+                    readFromENK=bool(int(i))
             else:
                 print(f"invalid preference '{i}'. Using default value...")
                 if indexCounter==2:
@@ -75,15 +76,18 @@ def fetchPreferences():
                 else:
                     print(f"invalid preference '{i}'. Using default value...")
                     with open("preferences.json","w") as file:
-                        Preferences["readfromtxt"] = 0
+                        Preferences["readfromENK"] = 0
                         json.dump(Preferences,file,indent=4)
-                    readFromtxt=False
+                    readFromENK=False
     print("preferences imported!")
 
 
-normallibrary="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/()?`+*~#'<>|²³}]{[.-;_: ="
+normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³}]{[.-;_: =
+"""
 throwawaylibrary=normallibrary
 library:str=""
+compatibleENKversions= ["1"]
+
 def intro():
     print(r'''
                             s@S$$S@s                    ,@S$$S.               s@S$$S@s                    
@@ -117,8 +121,8 @@ def intro():
                         # PARAMS: #
                         ###########
 
-# createNew:  if True, creates new seed. readFromtxt,custom_Packer, importseed and seed_ispacked will be ignored, as these functions are used for importing existing seeds.
-# readFromtxt: if you have a txt containing your data, enable this. otherwhise disable.
+# createNew:  if True, creates new seed. readFromENK,custom_Packer, importseed and seed_ispacked will be ignored, as these functions are used for importing existing seeds.
+# readFromENK: if you have an .enk file containing your data, enable this. otherwhise disable.
 # custom_PackerLibrary: only used if readFromtx = False, custom library that was used to pack this seed
 # importseed: only used if readFromtx = False ; the seed you used, if it is packed, enable seed_ispacked. otherwhise disable.  A packed seed looks like this :  11QT'`V>'`TQV[>nQ[Vn    ; An unpacked seed looks like this:   902138.231.2079187
 # seed_ispacked: set to true if the seed you provided is packed, otherwhise set to false
@@ -245,26 +249,57 @@ def makeLibrary():
         print(library)
         print("seed in use:")
         print(SeedInUse1)
-    elif readFromtxt or importseed:
-        if readFromtxt:
+        packerLibrary = None
+    elif readFromENK or importseed:
+        if readFromENK:
             try:
-                with open(fileLocation,"r",encoding="utf-8") as file:
-                    content = file.read()
-                    importseed = content.split("@")[0]
-                    packerLibrary = content.split("@")[1]
+                with open(fileLocation,"r") as file:
+                    filecontent = file.read()
+                    if not filecontent.startswith("ENKR"):
+                        print("ERROR: file structure is invalid.")
+                        StopFunc("init")
+                        return
+                    elif filecontent[4] not in compatibleENKversions:
+                        print(f"ERROR: File uses Wrong interpreter version. ({filecontent[4]})")
+                        StopFunc("init")
+                        return
+                    else:
+                        try:
+                            lOFl_seed=int(filecontent[5])
+                            print(f"len of len: {lOFl_seed}")
+                            seedLen = int(filecontent[6:6+lOFl_seed])
+                            print(f"length: {seedLen}")
+                            lOFl_libr = int(filecontent[6+lOFl_seed])
+                            librLen = int(filecontent[7+lOFl_seed:7+lOFl_seed+lOFl_libr])
+                        except ValueError:
+                            print("ERROR: file structure is invalid.")
+                            StopFunc("init")
+                            return
+                        importseed = filecontent[7+lOFl_seed+lOFl_libr:7+lOFl_seed+lOFl_libr+seedLen]
+                        packerLibrary = filecontent[7+lOFl_seed+lOFl_libr+seedLen:7+lOFl_seed+lOFl_libr+seedLen+librLen]
+#TODO
             except FileNotFoundError:
                 print(f"no {fileLocation} file exists. creating new Default...")
-                with open(fileLocation,"w",encoding="utf-8") as file:
+                with open(fileLocation,"w") as file:
                     library = createLibrary(normallibrary, random.randint(100,9999999), "init")
                     createLibrary(library , random.randint(100,9999999) , "commercial")
                     for i in range(encryptionamount):
                         library = createLibrary(library , random.randint(100,9999999),"none")
                     SeedInUse1 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
-                    importseed=packseed(SeedInUse1,True)
+                    importseed=packSeed(SeedInUse1,True)
                     packerLibrary = createLibrary(normallibrary, random.randint(1000,9898),"None")
-                    file.write(importseed + "@" + packerLibrary)
+                    MAGIC="ENKR"
+                    ENKversion = "1"
+                    seedData = importseed
+                    seedDataLength = str(len(seedData))
+                    lengthOfseedDataLength = str(len(str(seedDataLength)))
+                    packerlibrary = packerLibrary
+                    packerlibrarylength = str(len(packerlibrary))
+                    lengthOfPackerlibrarylength=str(len(str(packerlibrarylength)))
+                    content = MAGIC + ENKversion + lengthOfseedDataLength + seedDataLength + lengthOfPackerlibrarylength + packerlibrarylength + seedData + packerlibrary
+                    file.write(content)
             except IndexError:
-                print("ERROR in txtReader1 ; packerlibrary file format is invalid.")
+                print(f"ERROR in ENKreader ; {fileLocation} file format is invalid.")
                 StopFunc("init")
                 return
         else:
@@ -342,8 +377,17 @@ def writeToTXT():
     except NameError:
         print("packerLibrary has not been defined yet. Packing seed...")
     if packSeed(SeedInUse1,False) is not None:
-        with open(fileLocation,"w",encoding="utf-8") as file:
-            file.write(packSeed(SeedInUse1,True) + "@" + packerLibrary)
+        MAGIC="ENKR"
+        ENKversion = "1"
+        seedData = packSeed(SeedInUse1,True)
+        seedDataLength = str(len(seedData))
+        lengthOfseedDataLength = str(len(str(seedDataLength)))
+        packerlibrary = packerLibrary
+        packerlibrarylength = str(len(packerlibrary))
+        lengthOfPackerlibrarylength=str(len(str(packerlibrarylength)))
+        content = MAGIC + ENKversion + lengthOfseedDataLength + seedDataLength + lengthOfPackerlibrarylength + packerlibrarylength + seedData + packerlibrary
+        with open(fileLocation,"w") as file:
+            file.write(content)
     else:
         StopFunc("save/write")
         return
@@ -446,7 +490,7 @@ while True:
         print("startup preferences are stored in preferences.json")
         print("-- COMMANDS --\n")
         print("resetfile - resets the txt file to default values\n")
-        print("initiate / init {createnew: bool} , {readfromtxt: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool} - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
+        print("initiate / init {createnew: bool} , {readfromENK: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool} - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
         print("(function).params - shows a function's params and their current values \n") 
         print("save / write {filelocation: str} - packs and saves current seed in a txt.\n⤤ type 'help save' or 'help write' for a parameter explanation\n")
         print("displayseed / display {packmyseed / pack: bool} - displays the current seed in use. if packmyseed / pack is true, it will be displayed as a packed seed. Otherwhise it will be displayed in it's natural form.\n")
@@ -463,13 +507,13 @@ while True:
         print("INIT(IATE) FUNCTION:\n")
         print("general info:\nthe initiate function is used to kickstart the process of generating your library and seed. It is highly customizeable due to it's variety in different parameters (params). It is imperative that this function has been called before any other functions may run because it sets the baseline for any other further tools this module contains. It can not only create a new library and seed etc. , but it can also be used to import already existing seed-data, either from a .txt file, or using the data's manual input. your choice.\n")
         print("parameters:\n")
-        print("NAME:\ncreatenew\nTYPE:\nBool\nUSECASE:\nif set to True, an entirely new seed and library will be generated in the initiation process. given data like readfromtxt, importseed, custompackerlibrary and more will be ignored, however params used solely for creation like encryptionamount will be utilized. If it is set to False, the initiation process will try to import any given values. It will first check if readfromtxt is enabled (if so it will import the values from the .txt file) and then check for custom values (if none exist, hardcoded default values will be used. I advise against this, because encrypto relies on the diversity of it's encryption schemes, so using a singular fixed library and/or seed might bring up safety issues.)")
-        print("\nNAME:\nreadfromtxt\nTYPE:\nBool\nUSECASE:\nif set to True (and createnew is set to false), values will be read from the provided .txt file")
+        print("NAME:\ncreatenew\nTYPE:\nBool\nUSECASE:\nif set to True, an entirely new seed and library will be generated in the initiation process. given data like readfromENK, importseed, custompackerlibrary and more will be ignored, however params used solely for creation like encryptionamount will be utilized. If it is set to False, the initiation process will try to import any given values. It will first check if readfromENK is enabled (if so it will import the values from the .txt file) and then check for custom values (if none exist, hardcoded default values will be used. I advise against this, because encrypto relies on the diversity of it's encryption schemes, so using a singular fixed library and/or seed might bring up safety issues.)")
+        print("\nNAME:\nreadfromENK\nTYPE:\nBool\nUSECASE:\nif set to True (and createnew is set to false), seed-values will be read from the provided .enk file")
         print("\nNAME:\nimportseed\nTYPE:\nString\nUSECASE:\nparameter used for manual import of a seed. If you insert a packed seed, you must enable seed_ispacked and vice versa. Otherwhise the program will fail. NOTE that it is suggested to not use any spaces when defining this parameter (parameter=value)")
         print("\nNAME:\ncustom_packerlibrary\nTYPE:\nString\nUSECASE:\nparameter used for manual import of the library used to pack the manually imported seed. This parameter is only necessary if the seed you manually provided is packed.  NOTE that it is suggested to not use any spaces when defining this parameter (parameter=value)")
         print("\nNAME:\nseed_ispacked\nTYPE:\nBool\nUSECASE:\nIf you manually import a seed, you will have to set seed_ispacked to the corresponding value depending on if it is packed or not. if the provided seed is packed : seed_ispacked = True ; if it is not packed : seed_ispacked = False")
         print("\nNAME:\nencryptionamount\nTYPE:\nInt\nUSECASE:\nparameter that defines the amount of times your library will encrypt itself. This param is only used when creating a new library and it's default is a random integer.")
-        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted txt. This can be an absolute path (C:\\myprojects/txtfiles/save.txt) or a relative path (txtfiles/save.txt (if you are currently in the myprojects directory)). If you don't have a txt yet, one will be created for you if you execute the 'save' or 'write' command after initiating")
+        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted .enk file. This can be an absolute path (C:\\myprojects/enkfiles/save.enk) or a relative path (enkfiles/save.enk (if you are currently in the myprojects directory)). If you don't have an .enk file yet, one will be created for you if you execute the 'save' or 'write' command after initiating")
     elif prompt.lower() == "help list":
         print("-- LIST OF ALL COMMANDS WITH HELP DATA --\n")
         print("01 - INIT(IATE)\n")
@@ -486,9 +530,9 @@ while True:
     elif prompt.lower() == "help save" or prompt.lower() == "help write":
         print("-- ADVANCED HELP MENU - ENTRY 02 --\n")
         print("SAVE / WRITE FUNCTION:\n")
-        print("general info:\nthe save function saves your current seed in it's packed form and the library used to pack it in a .txt file of your choice. This allows for easier sharing of your seed-data, so that others can decode your previously encrypted messages easier.\n")
+        print("general info:\nthe save function saves your current seed in it's packed form and the library used to pack it in a .enk file of your choice. This allows for easier sharing of your seed-data, so that others can decode your previously encrypted messages easier.\n")
         print("parameters:")
-        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted txt. This can be an absolute path (C:\\myprojects/txtfiles/save.txt) or a relative path (txtfiles/save.txt (if you are currently in the myprojects directory)). If you don't have a txt yet, one will be created for you if you execute the 'save' command after initiating")
+        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted .enk file This can be an absolute path (C:\\myprojects/enkfiles/save.enk) or a relative path (enkfiles/save.enk (if you are currently in the myprojects directory)). If you don't have an .enk file yet, one will be created for you if you execute the 'save' command after initiating")
     elif prompt.lower() == "help seeds":
         print("-- ADVANCED HELP MENU - ENTRY 03 --\n")
         print("SEEDS:\n")
@@ -501,7 +545,7 @@ while True:
     elif prompt.lower() == "initiate.params" or prompt.lower() == "init.params":
         print("- showing relevant params for initiation process -")
         print(f"createNew = {createNew}")
-        print(f"readFromtxt = {readFromtxt}")
+        print(f"readFromENK = {readFromENK}")
         print(f"fileLocation = {fileLocation}")
         print(f"custompackerlibrary = {custom_PackerLibrary}")
         print(f"importseed = {importseed}")
@@ -517,7 +561,7 @@ while True:
     elif prompt.lower() == "all.params":
         print("- showing all params -")
         print(f"createNew = {createNew}")
-        print(f"readFromtxt = {readFromtxt}")
+        print(f"readFromENK = {readFromENK}")
         print(f"fileLocation = {fileLocation}")
         print(f"custompackerlibrary = {custom_PackerLibrary}")
         print(f"importseed = {importseed}")
@@ -551,12 +595,12 @@ while True:
                             json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
-                elif i.replace(" ","").startswith("readfromtxt="):
+                elif i.replace(" ","").startswith("readfromenk="):
                     if checkForBool(i.replace(" ","")) is not None:
-                        readFromtxt =checkForBool(i.replace(" ",""))
-                        modifiedParamsList.append(f"readFromtxt = {readFromtxt}")
+                        readFromENK =checkForBool(i.replace(" ",""))
+                        modifiedParamsList.append(f"readFromENK = {readFromENK}")
                         with open("Preferences.json","w") as file:
-                            Preferences["readfromtxt"] = 1 if readFromtxt else 0
+                            Preferences["readfromENK"] = 1 if readFromENK else 0
                             json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
@@ -594,11 +638,20 @@ while True:
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("filelocation="):
-                    fileLocation = i.replace(" ","").split("=",1)[1]
-                    modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                    with open("Preferences.json","w") as file:
-                        Preferences["filelocation"] = fileLocation
-                        json.dump(Preferences,file,indent=4)
+                    if i.replace(" ","").split("=",1)[1].endswith(".enk"):
+                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
+                        modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                        with open("Preferences.json","w") as file:
+                            Preferences["filelocation"] = fileLocation
+                            json.dump(Preferences,file,indent=4)
+                    elif "." in i.replace(" ","").split("=",1)[1]:
+                        print(f"invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                        print("only '.enk' files are allowed to save enkripto data")
+                        paramexception = True
+                    else:
+                        print(f"invalid filetype '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
+                        print("only '.enk' files are allowed to save enkripto data")
+                        paramexception = True
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -623,7 +676,7 @@ while True:
         print(f"current directory: {os.getcwd()}")
     elif prompt.lower() =="restoredefaults" or prompt.lower() == "default" or prompt.lower() == "defaults":
         createNew = True
-        readFromtxt = False
+        readFromENK = False
 
         library1 = createLibrary(normallibrary, random.randint(100,9999999), "init")
         createLibrary(library1 , random.randint(100,9999999) , "commercial")
@@ -638,7 +691,7 @@ while True:
         encryptionamount =random.randint(100,500) 
         packMySeed = True
         print("defaulting...\nsome true values are excluded due to their length:")
-        print(f"createnew = {createNew} \nreadfromtxt = {readFromtxt}\ncustom_packerlibrary = (default value)\nimportseed = (defaultvalue)\nseed_ispacked = {seed_ispacked}\nencryptionamount = {encryptionamount} (randomized)\npackmyseed = {packMySeed}\nfilelocation = {fileLocation}")
+        print(f"createnew = {createNew} \nreadfromENK = {readFromENK}\ncustom_packerlibrary = (default value)\nimportseed = (defaultvalue)\nseed_ispacked = {seed_ispacked}\nencryptionamount = {encryptionamount} (randomized)\npackmyseed = {packMySeed}\nfilelocation = {fileLocation}")
         print("defaults restored!")
     elif prompt.lower() == "exit":
         print("See you next time!")
@@ -654,11 +707,20 @@ while True:
             paramexception = False
             for i in params:
                 if i.replace(" ","").startswith("filelocation="):
-                    fileLocation = i.replace(" ","").split("=",1)[1]
-                    modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                    with open("Preferences.json","w") as file:
-                        Preferences["filelocation"] = fileLocation
-                        json.dump(Preferences,file,indent=4)
+                    if i.replace(" ","").split("=",1)[1].endswith(".enk"):
+                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
+                        modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                        with open("Preferences.json","w") as file:
+                            Preferences["filelocation"] = fileLocation
+                            json.dump(Preferences,file,indent=4)
+                    elif "." in i.replace(" ","").split("=",1)[1]:
+                        print(f"invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                        print("only '.enk' files are allowed to save enkripto data")
+                        paramexception = True
+                    else:
+                        print(f"invalid filetype '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
+                        print("only '.enk' files are allowed to save enkripto data")
+                        paramexception = True
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -667,7 +729,7 @@ while True:
                     print(f"invalid parameter definement ('{i}')")
                     paramexception = True
         if paramexception:
-            print("initiation aborted.")
+            print("process aborted.")
         else:
             if len(params) > 0 and params[0] != "":
                 print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
@@ -721,12 +783,12 @@ while True:
                 elif i.replace(" ","").startswith("packmyseed=") or i.replace(" ","").startswith("pack="):
                     packMySeed = checkForBool(i.replace(" ",""))
                     modifiedParamsList.append(f"packMySeed = {packMySeed}")
-                elif i.replace(" ","").startswith("readfromtxt="):
+                elif i.replace(" ","").startswith("readfromENK="):
                     if checkForBool(i.replace(" ","")) is not None:                        
-                        readFromtxt =checkForBool(i.replace(" ",""))
-                        modifiedParamsList.append(f"readFromtxt = {readFromtxt}")
+                        readFromENK =checkForBool(i.replace(" ",""))
+                        modifiedParamsList.append(f"readFromENK = {readFromENK}")
                         with open("Preferences.json","w") as file:
-                            preference[2] = 1 if readFromtxt else 0
+                            preference[2] = 1 if readFromENK else 0
                             json.dump(Preferences,file,indent=4)
                     else:
                         paramexception = True
@@ -771,11 +833,20 @@ while True:
                     else:
                         paramexception = True
                 elif i.replace(" ","").startswith("filelocation="):
-                    fileLocation = i.replace(" ","").split("=",1)[1]
-                    modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                    with open("Preferences.json","w") as file:
-                        Preferences["filelocation"] = fileLocation
-                        json.dump(Preferences,file,indent=4)
+                    if i.replace(" ","").split("=",1)[1].endswith(".enk"):
+                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
+                        modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                        with open("Preferences.json","w") as file:
+                            Preferences["filelocation"] = fileLocation
+                            json.dump(Preferences,file,indent=4)
+                    elif "." in i.replace(" ","").split("=",1)[1]:
+                        print(f"invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                        print("only '.enk' files are allowed to save enkripto data")
+                        paramexception = True
+                    else:
+                        print(f"invalid filetype '{i.replace(" ","").split("=",1)[1]}'")
+                        print("only '.enk' files are allowed to save enkripto data")
+                        paramexception = True
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -801,18 +872,38 @@ while True:
             paramexception = False
             for i in params:
                 casesensitivecounter =+ 1
-                if i.replace(" ","").startswith("msg=") or i.replace(" ","").startswith("target="):
+                if i.replace(" ","").startswith("msg="):
                     if library != "":
                         print("encrypting...")
                         print("ENCRYPTED MESSAGE:")
                         print(execute("encrypt", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True))
                     else:
                         print("no current library exists! Please initiate first.")
+                elif i.replace(" ","").startswith("target="):
+                    if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
+                        if library != "" and library is not None:
+                            try:
+                                print(f"encoding {caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}...")
+                                with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
+                                    target = file.read()
+                                newContents = execute("encrypt", target, library, True)
+                                if newContents is not None:
+                                    with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
+                                        file.write(newContents)
+                                        print(f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully encoded!")
+                            except FileNotFoundError:
+                                print(f"ERROR: File '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}' does not exist in this directory.")
+                        else:
+                            print("no current library exists! Please initiate first.")
+                    elif "." in caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]:
+                        print(f"Invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                    else:
+                        print(f"invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
                 else:
                     print(f"invalid parameter definement ('{i}')")
                     paramexception = True
         else:
-            print("no target message provided. aborting...")
+            print("no target message or file provided. aborting...")
     elif prompt.lower().startswith("decipher") or prompt.lower().startswith("decode"):
         params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
         caseSensitiveParams = prompt[8:].split(",")  if prompt.lower().startswith("decipher") else prompt[6:].split(",")
@@ -825,22 +916,42 @@ while True:
             paramexception = False
             for i in params:
                 casesensitivecounter =+ 1
-                if i.replace(" ","").startswith("msg=") or i.replace(" ","").startswith("target="):
+                if i.replace(" ","").startswith("msg="):
                     if library != "":
                         print("decoding...")
                         print("DECODED MESSAGE:")
                         print(execute("decipher", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True))
                     else:
                         print("no current library exists! Please initiate first.")
+                elif i.replace(" ","").startswith("target="):
+                    if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
+                        if library != "" and library is not None:
+                            try:
+                                print(f"decoding {caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}...")
+                                with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
+                                    target = file.read()
+                                newContents = execute("decipher", target, library, True)
+                                if newContents is not None:
+                                    with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
+                                        file.write(newContents)
+                                print(f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully decoded!")
+                            except FileNotFoundError:
+                                print(f"ERROR: File '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}' does not exist in this directory.")
+                        else:
+                            print("no current library exists! Please initiate first.")
+                    elif "." in caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]:
+                        print(f"Invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                    else:
+                        print(f"invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
                 else:
                     print(f"invalid parameter definement ('{i}')")
                     paramexception = True
         else:
-            print("no target message provided. aborting...")
+            print("no target message or file provided. aborting...")
 
 
 # createNew = True
-# readFromtxt = False
+# readFromENK = False
 # custom_PackerLibrary = "$M+EIaA{5ßGCWxL-2mhBqkjX 8?(d6SO4p]\;zw²eo)u_<l|!§tFVQ[R.v'>`TZ=P#³r3/}NK:bH1~&UJsDY*g,7i%n90fcy"
 # importseed = "171}8k1kSS}oW}8o}²8&k"
 # seed_ispacked = True

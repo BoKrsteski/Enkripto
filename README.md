@@ -62,13 +62,9 @@ This does not mean that established encryption systems are bad or insecure. Algo
 
 ## TXT File Encryption
 
-Direct TXT file encryption and decryption is planned for an upcoming version.
+Direct TXT file encryption and decryption is now implemented!
 
-Currently, text has to be provided directly to Enkripto. In the future, the goal is to simply select a TXT file and let Enkripto handle the encryption or decryption directly.
-
-For example, instead of copying the contents of a file into Enkripto, you will be able to give Enkripto the file itself.
-
-This is one of the next things I want to work on.
+simply use the `target=` parameter and provide a .txt file to be de- or encoded
 
 ## Releases
 

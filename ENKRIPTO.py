@@ -104,7 +104,7 @@ def intro():
                                                                   $$$$$                                     ''')
     print("-- ENKRIPTO v2.2.1 --\ntype 'help' to see a list of commands or a command's function")
 
-#MADE IN A DAY - EXPECT ERRORS AND BUGS
+#MADE BY A SINGLE DUDE - EXPECT BUGS - ALTHOUGH I HAVEN'T SEEN ANY
 
 
                     ###############
@@ -149,7 +149,7 @@ def resetFile():
         file.write(createLibrary(normallibrary,random.randint(1,9999999), "None"))
     print("file reset")
 
-# restores correct order in seeds.
+# restores correct order in packed seeds.
 def cleanse(providedSeed):
         cleanedSeed = ""
         try:
@@ -162,7 +162,8 @@ def cleanse(providedSeed):
             rest = rest[-1] + rest[:-1]
         cleanedSeed = rest
         return cleanedSeed
-#this function is called by makeLibrary() to create each commercial and the initial layer(s)
+
+#this function is called by makeLibrary() to create each commercial and initial layer(s)
 def createLibrary(factor, seed1, state):
     throwawaylibrary=factor
     seedCreator=""
@@ -180,6 +181,7 @@ def createLibrary(factor, seed1, state):
     return seedCreator
 
 #this function encrypts/decodes your messages!
+#hellz yeah
 def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = createLibrary(normallibrary,random.randint(1,9999999), "None"), outputMode:bool = False):
     if method == "encrypt":
         encrypted_message = ""
@@ -217,7 +219,7 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = cr
         return print(f"invalid param '{method}'")
 
 
-#this function packs all seeds provided (see dictionary)
+#this function packs all seeds provided (see help menu)
 #params:
 # UsedSeed: the seed you want to pack
 def packSeed(UsedSeed: str,outputMode: bool):
@@ -347,7 +349,7 @@ def makeLibrary():
         print("encryption layer amount:")
         print(encryptionamount)
 
-#displays the seed, duh. either packed or raw
+#displays the seed. either packed or raw
 def displaySeed():
     print("displaying seed in use...")
     if packMySeed:
@@ -363,7 +365,7 @@ def displaySeed():
         print("seed is unpacked:")
         print(SeedInUse1)
 
-#transfers your current seed and packerlibrary to the txt file, overwrites previous values
+#transfers your current seed and packerlibrary to the .enk file, overwrites previous values
 def writeToENK():
     print(f"writing packed seed and packerLibrary into {fileLocation} ...")
     try:
@@ -392,6 +394,7 @@ def writeToENK():
         return
     print(f"successfully written data to {fileLocation}")
 
+# self explanatory
 def checkForBool(item: str):
     if item.split("=")[1] == "true" or item.split("=",1)[1] == "1":
         return True
@@ -400,6 +403,7 @@ def checkForBool(item: str):
     print(f"expected Boolean value (true/false/1/0) and got faulty value ('{item}')")
     return None
 
+# self explanatory too
 def checkForInt(item: str):
     try:
         intitem= int(item.split("=",1)[1])
@@ -407,11 +411,13 @@ def checkForInt(item: str):
     except ValueError:
         print(f"expected integer value and got faulty value ('{item}')")
         return None
-#this is an example of what a workflow could look like:
+
+#this is an example of what a workflow could (used to) look like:
 # resetFile()
 # makeLibrary()
 # displaySeed()
 # print(execute("decipher","5abB{5hbjLmGhb5WW$bh{5BbW b-$xBh"))
+# luckily I have added my own parser now... So you don't have to hardcode inputs... Thank me later... Or never...
 
 
 
@@ -448,6 +454,7 @@ def testEncryption():
     del SeedInUse1,importseed,packerLibrary
     library=""
 
+# IMPORTANT main workflow:
 fetchPreferences()
 time.sleep(0.25)
 testEncryption()
@@ -475,6 +482,7 @@ while True:
     
     #CHECKING FOR help REQUEST
     if prompt.lower() == "help":
+        # get ready... FOR PRINT HELL!
         print("\n-- HELP MENU --")
         print('type "help" followed by a certain command or term to view advanced information about it (type "help list" to view all terms that have help data)\n') 
         print('type "explain" to receive a tutorial on how to use ENKRIPTO\n') # TODO
@@ -571,6 +579,7 @@ while True:
         ##########
         #COMMANDS#
         ##########
+    # checking for different commands:
     elif prompt.lower() == "resetfile":
         resetFile()
     elif prompt.lower().startswith("initiate") or prompt.lower().startswith("init"):
@@ -658,12 +667,15 @@ while True:
                         print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
                     print(f"invalid parameter definement ('{i}')")
                     paramexception = True
+        # safe way of handling exceptions while still respecting other parameter changes, so that every param will be modified except for the one with the faulty value.
+        # the process also gets aborted when a parameter definement is faulty, so that execution with the wrong or even fatal params can be prevented.
         if paramexception:
             print("initiation aborted.")
         else:
             if len(params) > 0 and params[0] != "":
                 print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
             makeLibrary()
+    #pretty cool tool: essentially just like bash's or linux's "ls". scans current work directory and lists directories and files.
     elif prompt.lower() == "scan" or prompt.lower() =="list" or prompt.lower() =="ls":
         print("displaying files and directories in current directory:")
         for file in os.listdir():
@@ -671,8 +683,10 @@ while True:
                 print(f"DIR : {file}")
             else:
                 print(f"FILE: {file}")
+    #displays current work directory path.
     elif prompt.lower() =="currentpath" or prompt.lower() =="cwd" or prompt.lower() =="currentdir":
         print(f"current directory: {os.getcwd()}")
+    #resets all parameters to default values.
     elif prompt.lower() =="restoredefaults" or prompt.lower() == "default" or prompt.lower() == "defaults":
         createNew = True
         readFromENK = False
@@ -691,10 +705,12 @@ while True:
         print("defaulting...\nsome true values are excluded due to their length:")
         print(f"createnew = {createNew} \nreadfromENK = {readFromENK}\ncustom_packerlibrary = (default value)\nimportseed = (defaultvalue)\nseed_ispacked = {seed_ispacked}\nencryptionamount = {encryptionamount} (randomized)\npackmyseed = {packMySeed}\nfilelocation = {fileLocation}")
         print("defaults restored!")
+    #exits and tips the program's virtual hat to the user.
     elif prompt.lower() == "exit":
         print("See you next time!")
         time.sleep(0.75)
         exit()
+    #saves seed-data to an .enk file.
     elif prompt.lower().startswith("save") or prompt.lower().startswith("write"):
         params = prompt.lower().removeprefix("save").replace(" ","").split(",") if prompt.lower().startswith("save") else prompt.lower().removeprefix("write").replace(" ","").split(",")
         if debug:
@@ -732,6 +748,7 @@ while True:
             if len(params) > 0 and params[0] != "":
                 print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
             writeToENK()
+    #displays the seed.
     elif prompt.lower().startswith("displayseed") or prompt.lower().startswith("display"):
         params = prompt.lower().removeprefix("displayseed").replace(" ","").split(",") if prompt.lower().startswith("displayseed") else prompt.lower().removeprefix("display").replace(" ","").split(",")
         if debug:
@@ -757,6 +774,7 @@ while True:
             if len(params) > 0 and params[0] != "":
                 print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
             displaySeed()
+    #sets parameters to custom values. as long as their type and content is allowed. This isn't that kind of playground.
     elif prompt.lower().startswith("setparams") or prompt.lower().startswith("setparam"):
         params = prompt.lower().removeprefix("setparams").replace(" ","").split(",") if prompt.lower().startswith("setparams") else prompt.lower().removeprefix("setparam").replace(" ","").split(",")
         caseSensitiveParams = prompt[9:].split(",") if prompt.lower().startswith("setparams") else prompt[8:].split(",")
@@ -858,6 +876,7 @@ while True:
                     print("invalid parameters provided.")
             else:
                 print("no parameters provided.")
+    #encrypts the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("encrypt") or prompt.lower().startswith("encode"):
         params = prompt.lower().removeprefix("encrypt").split(",") if prompt.lower().startswith("encrypt") else prompt.lower().removeprefix("encode").split(",")
         caseSensitiveParams = prompt[7:].split(",")  if prompt.lower().startswith("encrypt") else prompt[6:].split(",")
@@ -901,6 +920,7 @@ while True:
                     paramexception = True
         else:
             print("no target message or file provided. aborting...")
+    #deciphers the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("decipher") or prompt.lower().startswith("decode"):
         params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
         caseSensitiveParams = prompt[8:].split(",")  if prompt.lower().startswith("decipher") else prompt[6:].split(",")
@@ -945,7 +965,7 @@ while True:
         else:
             print("no target message or file provided. aborting...")
 
-
+# to be honest i don't know what these used to do but they're great for reminiscing:
 # createNew = True
 # readFromENK = False
 # custom_PackerLibrary = "$M+EIaA{5ßGCWxL-2mhBqkjX 8?(d6SO4p]\;zw²eo)u_<l|!§tFVQ[R.v'>`TZ=P#³r3/}NK:bH1~&UJsDY*g,7i%n90fcy"

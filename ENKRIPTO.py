@@ -676,7 +676,6 @@ while True:
     elif prompt.lower() =="restoredefaults" or prompt.lower() == "default" or prompt.lower() == "defaults":
         createNew = True
         readFromENK = False
-
         library1 = createLibrary(normallibrary, random.randint(100,9999999), "init")
         createLibrary(library1 , random.randint(100,9999999) , "commercial")
         for i in range(encryptionamount):
@@ -684,7 +683,7 @@ while True:
         global commercialseed
         global initseed
         SeedInUse2 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
-        importseed=packseed(SeedInUse2,True)
+        importseed=packSeed(SeedInUse2,True)
         custom_packerLibrary = createLibrary(normallibrary, random.randint(1000,9898),"None")
         seed_ispacked = True
         encryptionamount =random.randint(100,500) 

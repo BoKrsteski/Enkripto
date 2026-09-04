@@ -81,13 +81,11 @@ The Linux version is provided as a `.tar.gz` archive containing the Enkripto exe
 Just me, Bo Krsteski. A 16 year old student who loves to make little programs in his freetime.
 ## Project Status
 
-**Current version: `v1.2.1`**
 
 Enkripto is still actively being developed.
 
 The current version includes the core encryption system, Seed based scheme reconstruction, the Native Handling Hub and local preferences.
 
-Direct TXT file encryption and decryption is planned for a future release.
 
 ## License
 

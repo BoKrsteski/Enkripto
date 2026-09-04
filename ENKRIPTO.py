@@ -84,6 +84,7 @@ def fetchPreferences():
 
 normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³}]{[.-;_: =
 """
+#TODO not a fan of random linebreaks in encrypted messages. encode linebreaks into another letter.
 throwawaylibrary=normallibrary
 library:str=""
 compatibleENKversions= ["1"]
@@ -253,6 +254,7 @@ def makeLibrary():
         print(SeedInUse1)
         packerLibrary = None
     elif readFromENK or importseed:
+        #behold, the legendary ENK file interpreter:
         if readFromENK:
             try:
                 with open(fileLocation,"r") as file:
@@ -400,7 +402,7 @@ def checkForBool(item: str):
         return True
     if item.split("=")[1] == "false" or item.split("=",1)[1] == "0":
         return False
-    print(f"expected Boolean value (true/false/1/0) and got faulty value ('{item}')")
+    print(f"ERROR: expected Boolean value (true/false/1/0) and got faulty value ('{item}')")
     return None
 
 # self explanatory too
@@ -409,14 +411,14 @@ def checkForInt(item: str):
         intitem= int(item.split("=",1)[1])
         return intitem
     except ValueError:
-        print(f"expected integer value and got faulty value ('{item}')")
+        print(f"ERROR: expected integer value and got faulty value ('{item}')")
         return None
 
-#this is an example of what a workflow could (used to) look like:
+#this is an example of what a workflow used to look like:
 # resetFile()
 # makeLibrary()
 # displaySeed()
-# print(execute("decipher","5abB{5hbjLmGhb5WW$bh{5BbW b-$xBh"))
+# print(execute("decipher","5abB{5hbjLmGhb5WW$bh{5BbW b-$xBh")) <- all this is probably outdated as well
 # luckily I have added my own parser now... So you don't have to hardcode inputs... Thank me later... Or never...
 
 

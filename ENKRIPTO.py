@@ -90,8 +90,8 @@ compatibleENKversions= ["1"]
 
 def intro():
     print(r'''
-                            s@S$$S@s                    ,@S$$S.               s@S$$S@s                    
-        ,sS$S@go_              $$$$$$$'       ,sS$S@S$s,_  $$$$$$$    ,sS$S@go,  $$$$$$$'         ,sS$S@go,  
+                             s@S$$S@s                    ,@S$$S.               s@S$$S@s                    
+      ,sS$S@go_              $$$$$$$'       ,sS$S@S$s,_  $$$$$$$    ,sS$S@go,  $$$$$$$'         ,sS$S@go,  
     ,s$$$$$$$$$$,sS$S@S$s,_  `$$$$$'  .,$$$$$$$$$  o$$$s,`$$$$P'  ,s$$$$$$$$$, `$$$$$,        ,s$$$$$$$$$, 
     $$$$$' )$$$s$$$$$  $$$$s, $$$$$  $$$$$²'$$$$l `$$$$$P         $$$$$$l$$$$s $$$$$$%S$S;    $$$$$$l$$$$s 
     $$$$' o$$$P'$$$$l   `$$$$ $$$$$%$s²"`_  $$$$$  `"""" od$$$bo. $$$$l' `$$$$,`$$$$$"²╙'     $$$$l' `$$$$,
@@ -102,7 +102,7 @@ def intro():
                                      gV$$²'                       $$$$$                                    
                                                                   $$$$$                                    
                                                                   $$$$$                                     ''')
-    print("-- ENKRIPTO v.0.2 --\ntype 'help' to see a list of commands or a command's function")
+    print("-- ENKRIPTO v2.2.1 --\ntype 'help' to see a list of commands or a command's function")
 
 #MADE IN A DAY - EXPECT ERRORS AND BUGS
 

@@ -82,8 +82,7 @@ def fetchPreferences():
     print("preferences imported!")
 
 
-normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³}]{[.-;_: =
-"""
+normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@"""
 #TODO not a fan of random linebreaks in encrypted messages. encode linebreaks into another letter.
 throwawaylibrary=normallibrary
 library:str=""
@@ -204,7 +203,7 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = cr
         decrypted_message = ""
         if outputMode:
             print("provided message to decode:")
-            print("message")
+            print(message)
         if debug:
             print(library)
         for i in message:
@@ -903,8 +902,9 @@ while True:
                             try:
                                 print(f"encoding {caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}...")
                                 with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
-                                    target = file.read()
-                                newContents = execute("encrypt", target, library, True)
+                                    target = file.read().replace(r"""
+""", "²")
+                                newContents = execute("encrypt", target, library, False)
                                 if newContents is not None:
                                     with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
                                         file.write(newContents)
@@ -948,10 +948,11 @@ while True:
                                 print(f"decoding {caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}...")
                                 with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
                                     target = file.read()
-                                newContents = execute("decipher", target, library, True)
+                                newContents = execute("decipher", target, library, False)
                                 if newContents is not None:
                                     with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
-                                        file.write(newContents)
+                                        file.write(newContents.replace("²", r"""
+"""))
                                 print(f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully decoded!")
                             except FileNotFoundError:
                                 print(f"ERROR: File '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}' does not exist in this directory.")

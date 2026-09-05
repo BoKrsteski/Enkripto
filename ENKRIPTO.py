@@ -83,7 +83,6 @@ def fetchPreferences():
 
 
 normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@"""
-#TODO not a fan of random linebreaks in encrypted messages. encode linebreaks into another letter.
 throwawaylibrary=normallibrary
 library:str=""
 compatibleENKversions= ["1"]

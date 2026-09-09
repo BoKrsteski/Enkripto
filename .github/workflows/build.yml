@@ -32,9 +32,7 @@ jobs:
     - name: install pyinstaller
       run: |
         python -m pip install --upgrade pip
-        # SICHERHEITS-UPDATE 2: Feste Versionen vorgeben.
-        # Bitte passe die Versionsnummern auf die von dir getesteten Versionen an.
-        pip install pyinstaller==6.5.0 pillow==10.2.0
+        pip install pyinstaller==6.22.2 pillow==12.3.0
     - name: build enkripto!
       run: |
         pyinstaller --onefile --icon=icon.ico ENKRIPTO.py

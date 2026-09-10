@@ -85,6 +85,7 @@ jobs:
         sha256sum * > SHA256SUMS.txt
     - name: write packages into requirements.txt
       run: |
+        mkdir -p for_contributors
         python -m pip freeze > for_contributors/requirements.txt
     - name: update requirements.txt in main
       run: |

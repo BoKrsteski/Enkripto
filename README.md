@@ -16,6 +16,21 @@ There are around **10¹⁵⁰ possible schemes**, which makes the possible combi
 
 I am intentionally not explaining every part of how the system works here. Some parts of Enkripto are better left inside the project rather than being completely explained in the README.
 
+## How to download Enkripto
+
+Simply go to the releases section (located on the left on desktop / below the readme.md contents on mobile) and select the version you want to download. usually the updates are documented, if not you can look at the commit history. I recommend always getting the latest version, though.
+
+### OS specific downloads
+
+#### windows:
+If you are on a windows 64-bit model, download the .exe file by simply clicking it.
+
+#### linux:
+if you are on any 64-bit linux distro, click the .tar.gz archive file.
+
+### how to execute enkripto
+#### windows:
+simply double-click the .exe file in your file explorer or type `start (path to the executable)/Enkripto.exe`
 ## Native Handling Hub
 
 The **Native Handling Hub (NHH)** is a part of Enkripto's internal system.

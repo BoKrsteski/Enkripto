@@ -86,6 +86,11 @@ jobs:
     - name: write packages into requirements.txt
       run: |
         python -m pip freeze > requirements.txt
+    - name: update requirements.txt in main
+      run: |
+        git add requirements.txt
+        git diff --cached --quiet || git commit -m "automatic update for requirements.txt"
+        git push
 
     - name: create github release
       uses: softprops/action-gh-release@v2

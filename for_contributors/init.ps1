@@ -4,4 +4,5 @@ if(-not (Get-Command python -ErrorAction SilentlyContinue)) {
   Write-Host "python not installed"
   exit 1
 }
-python -m venv "$projectdir\.venv" & "$projectdir\.venv\scripts\python.exe" -m pip install -r "$scriptdir\requirements.txt"
+python -m venv "$projectdir\.venv"
+& "$projectdir\.venv\scripts\python.exe" -m pip install -r "$scriptdir\requirements.txt"

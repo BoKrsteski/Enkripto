@@ -36,7 +36,18 @@ open the folder (or change directories to the one holding the tarball archive) a
 
 ## what now?
 
-first off, there is a fairly detailed help feature that you can access by simply typing `help`. there are also some entries for specific commands. To list them, type
+### if you're lost and are unsure what to do, there are 3 ways of receiving help:
+
+#### help menu:
+first off, there is a fairly detailed help feature that you can access by simply typing `help`. there are also some entries for specific commands. To list them, type `help list`. if you want to see a specific entry, type `help (entry name)`. You can also type `explain` to receive links to the other 2 help options below.
+
+### documentation page:
+The documentation lists holds all the most important information and tips on how to properly use enkripto. it shows direct workflows that one could even copy. It should be up to date most of the time. To open it, visit https://github.io/Bokrsteski/Enkripto 
+
+### Youtube tutorial:
+I don't recommend this method, because the video is outdated and uses features that have been changed completely. however, the core commands still are correct, that is why it's still up. I am working on a new and updated tutorial. it should release soon.
+watch the video here: https://youtu.be/76r2yHeQkC8
+
 ## Native Handling Hub
 
 The **Native Handling Hub (NHH)** is a part of Enkripto's internal system.

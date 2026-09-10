@@ -4,9 +4,9 @@ this directory is specifically designed for contributors who want to download th
 
 To download the dependencies located in `requirements.txt` in a virtual environment that will be created in the parent of this directory, you need to execute either the `.ps1` or `.sh` file, depending on you OS.
 
-If you are on *WINDOWS*, execute `ìnit.ps1`.
+If you are on *WINDOWS*, execute `ìnit.ps1`, preferrably using `./init.sh` in a terminal that is located in the same directory.
 
-If you are on *LINUX* or *macOS*, execute `ìnit.sh`.
+If you are on *LINUX* or *macOS*, execute `ìnit.sh`, preferrably using `.\init.ps1` in a terminal that is located in the same directory.
 
 again, a virtual environment along with a `.venv` folder will be created in the *PARENT* directory, meaning one directory before this one, where the python file should also be located.
 

@@ -7,4 +7,4 @@ then
   exit 1
 fi
 python3 -m venv "$PROJECTDIR/.venv"
-"$PROJECTDIR/.venv/bin/python" -m pip install -r "$SCEIPTDIR/requirements.txt"
+"$PROJECTDIR/.venv/bin/python" -m pip install -r "$SCRIPTDIR/requirements.txt"

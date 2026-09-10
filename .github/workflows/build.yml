@@ -82,6 +82,7 @@ jobs:
         pip install pyinstaller==6.22.2 pillow==12.3.0
     - name: make requirements.txt
       run: |
+        mkdir -p for_contributors
         python -m pip freeze > for_contributors/requirements.txt
     - name: update requirements.txt
       run: |

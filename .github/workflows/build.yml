@@ -83,6 +83,9 @@ jobs:
       working-directory: release
       run: |
         sha256sum * > SHA256SUMS.txt
+    - name: write packages into requirements.txt
+      run: |
+        python -m pip freeze > requirements.txt
 
     - name: create github release
       uses: softprops/action-gh-release@v2

@@ -62,11 +62,28 @@ jobs:
       with:
         name: enkripto-linux-x64
         path: release/*
-    - name: write packages into requirements.txt
+        
+  update-requirements:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout main
+      uses: actions/checkout@v4
+      with:
+        ref: main
+    - name: set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: get dependencies
       run: |
-        mkdir -p for_contributors
+        python -m pip install --upgrade pip
+        pip install pyinstaller==6.22.2 pillow==12.3.0
+    - name: make requirements.txt
+      run: |
         python -m pip freeze > for_contributors/requirements.txt
-    - name: update requirements.txt in main
+    - name: update requirements.txt
       run: |
         git config user.name "req-autoupdater[bot]"
         git config user.email "41898282+req-autoupdater[bot]@users.noreply.github.com"

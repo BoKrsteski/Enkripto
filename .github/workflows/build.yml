@@ -85,10 +85,10 @@ jobs:
         sha256sum * > SHA256SUMS.txt
     - name: write packages into requirements.txt
       run: |
-        python -m pip freeze > requirements.txt
+        python -m pip freeze > for_contributors/requirements.txt
     - name: update requirements.txt in main
       run: |
-        git add requirements.txt
+        git add for_contributors/requirements.txt
         git diff --cached --quiet || git commit -m "automatic update for requirements.txt"
         git push
 

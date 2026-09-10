@@ -48,6 +48,7 @@ To open it, visit https://bokrsteski.github.io/Enkripto/
 
 #### Youtube tutorial:
 I don't recommend this method, because the video is outdated and uses features that have been changed completely. however, the core commands still are correct, that is why it's still up. I am working on a new and updated tutorial. it should release soon.
+
 watch the video here: https://youtu.be/76r2yHeQkC8
 
 ## Native Handling Hub

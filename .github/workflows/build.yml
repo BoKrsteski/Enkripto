@@ -62,6 +62,15 @@ jobs:
       with:
         name: enkripto-linux-x64
         path: release/*
+    - name: write packages into requirements.txt
+      run: |
+        mkdir -p for_contributors
+        python -m pip freeze > for_contributors/requirements.txt
+    - name: update requirements.txt in main
+      run: |
+        git add for_contributors/requirements.txt
+        git diff --cached --quiet || git commit -m "automatic update for requirements.txt"
+        git push
 
   release:
     needs: build
@@ -83,15 +92,6 @@ jobs:
       working-directory: release
       run: |
         sha256sum * > SHA256SUMS.txt
-    - name: write packages into requirements.txt
-      run: |
-        mkdir -p for_contributors
-        python -m pip freeze > for_contributors/requirements.txt
-    - name: update requirements.txt in main
-      run: |
-        git add for_contributors/requirements.txt
-        git diff --cached --quiet || git commit -m "automatic update for requirements.txt"
-        git push
 
     - name: create github release
       uses: softprops/action-gh-release@v2

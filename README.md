@@ -43,6 +43,7 @@ first off, there is a fairly detailed help feature that you can access by simply
 
 #### documentation page:
 The documentation lists holds all the most important information and tips on how to properly use enkripto. it shows direct workflows that one could even copy. It should be up to date most of the time.
+
 To open it, visit https://bokrsteski.github.io/Enkripto/
 
 #### Youtube tutorial:

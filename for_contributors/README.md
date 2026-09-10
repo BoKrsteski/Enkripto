@@ -6,7 +6,7 @@ To download the dependencies located in `requirements.txt` in a virtual environm
 
 If you are on *WINDOWS*, execute `ìnit.ps1`.
 
-If you are on *LINUX*, execute `ìnit.sh`.
+If you are on *LINUX* or *macOS*, execute `ìnit.sh`.
 
 again, a virtual environment along with a `.venv` folder will be created in the *PARENT* directory, meaning one directory before this one, where the python file should also be located.
 

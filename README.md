@@ -18,7 +18,7 @@ I am intentionally not explaining every part of how the system works here. Some 
 
 ## How to download Enkripto
 
-Simply go to the releases section (located on the left on desktop / below the readme.md contents on mobile) and select the version you want to download. usually the updates are documented, if not you can look at the commit history. I recommend always getting the latest version, though.
+Simply go to the releases section (located on the left) and select the version you want to download. usually the updates are documented, if not you can look at the commit history. I recommend always getting the latest version, though.
 
 ### OS specific downloads
 
@@ -26,7 +26,7 @@ Simply go to the releases section (located on the left on desktop / below the re
 If you are on a windows 64-bit model, download the .exe file by simply clicking it.
 
 #### linux:
-if you are on any 64-bit linux distro, click the .tar.gz archive file.
+if you are on any 64-bit linux distro, click the .tar.gz archive file to download it.
 
 ### how to execute enkripto
 #### windows:

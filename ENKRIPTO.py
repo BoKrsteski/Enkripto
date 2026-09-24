@@ -10,7 +10,7 @@ else:
     os.system("printf '\\033[8;100;120t'")
 def fetchPreferences():
     global Preferences
-    preferenceIdol = ["Default.enk,",1,0]
+    preferenceIdol = ["Default.enk",1,0]
     try:
         print("fetching preferences...")
         with open("preferences.json","r") as file:

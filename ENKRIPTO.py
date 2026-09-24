@@ -101,7 +101,8 @@ def intro():
                                      gV$$²'                       $$$$$                                    
                                                                   $$$$$                                    
                                                                   $$$$$                                     ''')
-    print("-- ENKRIPTO v2.2.1 --\ntype 'help' to see a list of commands or a command's function")
+    print("-- ENKRIPTO v2.3.4 --\ntype 'help' to see a list of commands or a command's function")
+#TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
 
 #MADE BY A SINGLE DUDE - EXPECT BUGS - ALTHOUGH I HAVEN'T SEEN ANY
 
@@ -421,8 +422,11 @@ def checkForInt(item: str):
 
 
 
-def testEncryption():
-    print("Running diagnostics...")
+def testEncryption(mode: int):
+    if mode == 1:
+        print("Running diagnostics...")
+    else:
+        print("Running backup diagnostics...")
     old_stdout=sys.stdout
     sys.stdout=open(os.devnull,"w")
     try:
@@ -458,7 +462,8 @@ def testEncryption():
 # IMPORTANT main workflow:
 fetchPreferences()
 time.sleep(0.25)
-testEncryption()
+testEncryption(1)
+testEncryption(2)
 time.sleep(0.25)
 intro()
 

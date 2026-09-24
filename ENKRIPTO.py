@@ -451,8 +451,9 @@ def testEncryption():
     sys.stdout=old_stdout
     print("Testing completed successfully!")
     global SeedInUse1,importseed,packerLibrary
-    del SeedInUse1,importseed,packerLibrary
+    del SeedInUse1,packerLibrary
     library=""
+    importseed=r""
 
 # IMPORTANT main workflow:
 fetchPreferences()
@@ -565,17 +566,21 @@ while True:
     elif prompt.lower() == "display.params" or prompt.lower() == "displayseed.params":
         print("- showing relevant params for display process -")
         print(f"packMySeed = {packMySeed}")
-    elif prompt.lower() == "all.params":
-        print("- showing all params -")
-        print(f"createNew = {createNew}")
-        print(f"readFromENK = {readFromENK}")
-        print(f"fileLocation = {fileLocation}")
-        print(f"custompackerlibrary = {custom_PackerLibrary}")
-        print(f"importseed = {importseed}")
-        print(f"seed_ispacked = {seed_ispacked}")
-        print(f"encryptionamount = {encryptionamount}")
-        print(f"fileLocation = {fileLocation}")
-        print(f"packMySeed = {packMySeed}")
+    elif prompt.lower() == "all.params": 
+        try:
+            test = SeedInUse1
+            print("- showing all params -")
+            print(f"createNew = {createNew}")
+            print(f"readFromENK = {readFromENK}")
+            print(f"fileLocation = {fileLocation}")
+            print(f"custompackerlibrary = {custom_PackerLibrary}")
+            print(f"importseed = {importseed}")
+            print(f"seed_ispacked = {seed_ispacked}")
+            print(f"encryptionamount = {encryptionamount}")
+            print(f"fileLocation = {fileLocation}")
+            print(f"packMySeed = {packMySeed}")
+        except NameError:
+            print("seed has not been defined yet. Try initiating before saving.")
         ##########
         #COMMANDS#
         ##########

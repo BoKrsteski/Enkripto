@@ -4,6 +4,9 @@ import sys
 import json
 import time
 
+# TODO mktxt function, contents parameter
+# TODO viewconfigs function
+
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
 else:
@@ -459,6 +462,13 @@ def testEncryption(mode: int):
     library=""
     importseed=r""
 
+def mktxt(name: str, content: str):
+    name = name if name.endswith(".txt") else name + ".txt"
+    with open(name,  "w", encoding="utf-8") as file:
+        write = content if content else ""
+        file.write(write)
+    return name
+
 # IMPORTANT main workflow:
 fetchPreferences()
 time.sleep(0.25)
@@ -758,6 +768,37 @@ while True:
             if len(params) > 0 and params[0] != "":
                 print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
             writeToENK()
+    elif prompt.lower().startswith("mktxt"):
+        params = prompt.lower().removeprefix("mktxt").split(",")
+        if debug:
+            print(params)
+        paramexception = False
+        if len(params) > 0 and params != "":
+            modifiedParamsList = []
+            paramexception = False
+            contents = ""
+            mktxtname = None
+            for i in params:
+                if i.replace(" ","").startswith("contents="):
+                    contents = i.split("=",1)[1]
+                elif i.replace(" ","").startswith("name="):
+                    mktxtname =  i.replace(" ","").split("=",1)[1]
+                else:
+                    print(f"invalid parameter definement ('{i}')")
+                    paramexception = True
+            if paramexception:
+                print("initiation aborted.")
+            elif mktxtname is not None:
+                if contents == "":
+                    print("WARNING: contents not defined. creating empty txt...")
+                else:
+                    print("creating txt...")
+                print(mktxt(mktxtname,contents))
+            else:
+                print("ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added")
+        else:
+            print("ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added")
+
     #displays the seed.
     elif prompt.lower().startswith("displayseed") or prompt.lower().startswith("display"):
         params = prompt.lower().removeprefix("displayseed").replace(" ","").split(",") if prompt.lower().startswith("displayseed") else prompt.lower().removeprefix("display").replace(" ","").split(",")

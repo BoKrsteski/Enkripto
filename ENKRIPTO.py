@@ -3,23 +3,29 @@ import os
 import sys
 import json
 import time
+import traceback
 
-# TODO mktxt function, contents parameter
-# TODO viewconfigs function
+YELLOW = "\033[93m"
+GREEN = "\033[1;92m"
+RESET = "\033[0m"
+RED = "\033[91m"
+BLUE = "\033[96m"
+# TODO documentation for mktxt & showprefs
+#split help menu into parts
 
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
 else:
     os.system("printf '\\033[8;100;120t'")
-def fetchPreferences():
+def fetchPreferences(withStatus: bool = False):
     global Preferences
     preferenceIdol = ["Default.enk",1,0]
     try:
-        print("fetching preferences...")
+        print(BLUE+"fetching preferences..."+RESET)
         with open("preferences.json","r") as file:
             Preferences = json.load(file)
     except FileNotFoundError:
-        print("no preferences.json found. Creating new with default values...")
+        print(RED + "no preferences.json found. Creating new with default values..." + RESET)
         with open("preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
@@ -28,7 +34,7 @@ def fetchPreferences():
                         "createnew": 1,
                         "readfromENK": 0}
     except json.JSONDecodeError:
-            print("no preferences.json contains invalid JSON. restoring default values...")
+            print(RED + "no preferences.json contains invalid JSON. restoring default values..." +RESET)
             with open("preferences.json","w") as file:
                 json.dump({"filelocation":"Default.enk",
                         "createnew": 1,
@@ -38,7 +44,7 @@ def fetchPreferences():
                             "readfromENK": 0}
     def defaultpref():
         global preference
-        print("invalid preferences.json provided. Setting default values...")
+        print(RED+"invalid preferences.json provided. Setting default values..."+RESET)
         with open("preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
@@ -56,7 +62,7 @@ def fetchPreferences():
             if i.endswith(".enk"):
                 fileLocation = i
             else:
-                print(f"invalid preference '{i}'. Using default value...")
+                print(RED+f"invalid preference '{i}'. Using default value..."+RESET)
                 with open("preferences.json","w") as file:
                     Preferences["filelocation"] = "Default.enk"
                     json.dump(Preferences,file,indent=4)
@@ -70,19 +76,22 @@ def fetchPreferences():
                 else:
                     readFromENK=bool(int(i))
             else:
-                print(f"invalid preference '{i}'. Using default value...")
+                print(RED+f"invalid preference '{i}'. Using default value..."+RESET)
                 if indexCounter==2:
                     with open("preferences.json","w") as file:
                         Preferences["createnew"] = 1
                         json.dump(Preferences,file,indent=4)
                     createNew = True
                 else:
-                    print(f"invalid preference '{i}'. Using default value...")
+                    print(RED+f"invalid preference '{i}'. Using default value..."+RESET)
                     with open("preferences.json","w") as file:
                         Preferences["readfromENK"] = 0
                         json.dump(Preferences,file,indent=4)
                     readFromENK=False
-    print("preferences imported!")
+    if withStatus:
+        print(f"preferences:\n{" , ".join(Preferences)}")
+    else:
+        print(GREEN+"preferences imported!"+RESET)
 
 
 normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@"""
@@ -91,7 +100,7 @@ library:str=""
 compatibleENKversions= ["1"]
 
 def intro():
-    print(r'''
+    print(RED + r'''
                              s@S$$S@s                    ,@S$$S.               s@S$$S@s                    
       ,sS$S@go_              $$$$$$$'       ,sS$S@S$s,_  $$$$$$$    ,sS$S@go,  $$$$$$$'         ,sS$S@go,  
     ,s$$$$$$$$$$,sS$S@S$s,_  `$$$$$'  .,$$$$$$$$$  o$$$s,`$$$$P'  ,s$$$$$$$$$, `$$$$$,        ,s$$$$$$$$$, 
@@ -103,8 +112,8 @@ def intro():
         `"²"`           `²$ⁿ' `²$$$  ,$$$$$'  `""         `4$$$$" $$$$$ `$`     `²$²"^²$$$²'      `"²"`    
                                      gV$$²'                       $$$$$                                    
                                                                   $$$$$                                    
-                                                                  $$$$$                                     ''')
-    print("-- ENKRIPTO v2.3.4 --\ntype 'help' to see a list of commands or a command's function")
+                                                                  $$$$$                                     ''' + RESET)
+    print(BLUE+"-- ENKRIPTO v2.3.4 --\n"+RESET+"type 'help' to see a list of commands or a command's function")
 #TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
 
 #MADE BY A SINGLE DUDE - EXPECT BUGS - ALTHOUGH I HAVEN'T SEEN ANY
@@ -141,16 +150,17 @@ packMySeed: bool = True
 packerLibrary = None
 
 debug = False
-
+if __name__ == "__main__":
+    debug = True
 # used to exit upon self-raised errors
 def StopFunc(func: str):
-    print(f"'{func}' Function execution aborted.")
+    print(YELLOW+f"'{func}' Function execution aborted."+RESET)
 
 # use this to either reset or create the txt file with default values
 def resetFile():
     with open(fileLocation,"w",encoding="utf-8") as file:
         file.write(createLibrary(normallibrary,random.randint(1,9999999), "None"))
-    print("file reset")
+    print(GREEN+"file reset"+RESET)
 
 # restores correct order in packed seeds.
 def cleanse(providedSeed):
@@ -158,7 +168,7 @@ def cleanse(providedSeed):
         try:
             formatter = int(providedSeed[:2])
         except ValueError:
-            print("ERROR in Cleanse() ; invalid seed imported")
+            print(RED+"ERROR in Cleanse() ; invalid seed imported"+RESET)
             return None
         rest = (providedSeed[2:])
         for u in range(formatter):
@@ -190,14 +200,14 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = cr
         encrypted_message = ""
         if outputMode:
             print("provided message to encrypt:")
-            print(message)
+            print(BLUE+message+RESET)
         if debug:
             print(normallibrary)
         for i in message:
             try:
                 location = normallibrary.index(i)
             except ValueError:
-                return print(f"ERROR: the Enkripto library currently does not support use of the character '{i}'. Please make sure to leave this particular character out during your next attempt")
+                return print(RED+f"ERROR: the Enkripto library currently does not support use of the character '{i}'. Please make sure to leave this particular character out during your next attempt"+RESET)
             encrypted_message += library[location]
         if outputMode:
             print("encrypted message:")
@@ -206,20 +216,20 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = cr
         decrypted_message = ""
         if outputMode:
             print("provided message to decode:")
-            print(message)
+            print(BLUE+message+RESET)
         if debug:
             print(library)
         for i in message:
             try:
                 location = library.index(i)
             except ValueError:
-                return print(f"ERROR: the Enkripto library currently does not support use of the character '{i}'. Please make sure to leave this particular character out during your next attempt")
+                return print(RED+f"ERROR: the Enkripto library currently does not support use of the character '{i}'. Please make sure to leave this particular character out during your next attempt"+RESET)
             decrypted_message += normallibrary[location]
         if outputMode:
             print("decoded message:")
         return decrypted_message
     else:
-        return print(f"invalid param '{method}'")
+        return print(RED+f"invalid param '{method}'"+RESET)
 
 
 #this function packs all seeds provided (see help menu)
@@ -247,13 +257,13 @@ def makeLibrary():
         for i in range(encryptionamount):
             library = createLibrary(library , random.randint(100,9999999),"none")
         SeedInUse1 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
-        print("creating new seed...")
-        print("layers:")
-        print(encryptionamount)
-        print("library in use:")
-        print(library)
-        print("seed in use:")
-        print(SeedInUse1)
+        print(BLUE+"creating new seed..."+RESET)
+        print(YELLOW+"layers:"+RESET)
+        print(BLUE+str(encryptionamount)+RESET)
+        print(YELLOW+"library in use:"+RESET)
+        print(BLUE+library+RESET)
+        print(YELLOW+"seed in use:"+RESET)
+        print(BLUE+SeedInUse1+RESET)
         packerLibrary = None
     elif readFromENK or importseed:
         #behold, the legendary ENK file interpreter:
@@ -262,29 +272,27 @@ def makeLibrary():
                 with open(fileLocation,"r") as file:
                     filecontent = file.read()
                     if not filecontent.startswith("ENKR"):
-                        print("ERROR: file structure is invalid.")
+                        print(RED+"ERROR: file structure is invalid."+RESET)
                         StopFunc("init")
                         return
                     elif filecontent[4] not in compatibleENKversions:
-                        print(f"ERROR: File uses Wrong interpreter version. ({filecontent[4]})")
+                        print(RED+f"ERROR: File uses Wrong interpreter version. ({filecontent[4]})"+RESET)
                         StopFunc("init")
                         return
                     else:
                         try:
                             lOFl_seed=int(filecontent[5])
-                            print(f"len of len: {lOFl_seed}")
                             seedLen = int(filecontent[6:6+lOFl_seed])
-                            print(f"length: {seedLen}")
                             lOFl_libr = int(filecontent[6+lOFl_seed])
                             librLen = int(filecontent[7+lOFl_seed:7+lOFl_seed+lOFl_libr])
                         except ValueError:
-                            print("ERROR: file structure is invalid.")
+                            print(RED+"ERROR: file structure is invalid."+RESET)
                             StopFunc("init")
                             return
                         importseed = filecontent[7+lOFl_seed+lOFl_libr:7+lOFl_seed+lOFl_libr+seedLen]
                         packerLibrary = filecontent[7+lOFl_seed+lOFl_libr+seedLen:7+lOFl_seed+lOFl_libr+seedLen+librLen]
             except FileNotFoundError:
-                print(f"no {fileLocation} file exists. creating new Default...")
+                print(YELLOW+f"WARNING: no {fileLocation} file exists. creating new Default..."+RESET)
                 with open(fileLocation,"w") as file:
                     library = createLibrary(normallibrary, random.randint(100,9999999), "init")
                     createLibrary(library , random.randint(100,9999999) , "commercial")
@@ -304,33 +312,33 @@ def makeLibrary():
                     content = MAGIC + ENKversion + lengthOfseedDataLength + seedDataLength + lengthOfPackerlibrarylength + packerlibrarylength + seedData + packerlibrary
                     file.write(content)
             except IndexError:
-                print(f"ERROR in ENKreader ; {fileLocation} file format is invalid.")
+                print(RED+f"ERROR in ENKreader ; {fileLocation} file format is invalid."+RESET)
                 StopFunc("init")
                 return
         else:
-            print(f"reading {fileLocation} disabled. reading manual seed...")
+            print(YELLOW+f"WARNING: reading {fileLocation} disabled. reading manual seed..."+RESET)
             if seed_ispacked:
                 if len(custom_PackerLibrary) == len(normallibrary):
                     packerLibrary = custom_PackerLibrary
                 else:
-                    print("ERROR in custom_PackerLibrary reader ; custom_packerlibrary format is invalid.")
+                    print(RED+"ERROR in custom_PackerLibrary reader ; custom_packerlibrary format is invalid."+RESET)
                     StopFunc("init")
                     return
-        print("provided seed: " + importseed)
+        print(BLUE+"provided seed: " + importseed+RESET)
         if seed_ispacked:
             if cleanse(importseed) is not None:
                 cleansedSeed = cleanse(importseed)
-                print("cleansed seed: " + cleansedSeed)
+                print(BLUE+"cleansed seed: " + cleansedSeed+RESET)
                 CleansedAndDecodedSeed = execute("decrypt", cleansedSeed,packerLibrary)
-                print("decoded seed: " + CleansedAndDecodedSeed)
+                print(BLUE+"decoded seed: " + CleansedAndDecodedSeed+RESET)
             else:
-                print("ERROR in cleanseSeed ; invalid seed provided!")
+                print(RED+"ERROR in cleanseSeed ; invalid seed provided!"+RESET)
                 StopFunc("init")
                 return
         try:
             getinitseed , getencryptionamount, getCommercialSeed = CleansedAndDecodedSeed.split(".") if seed_ispacked else cleansedSeed.split(".")
         except ValueError:
-            print("ERROR in getSeedValues ; invalid seed provided!")
+            print(RED+"ERROR in getSeedValues ; invalid seed provided!"+RESET)
             StopFunc("init")
             return
         try:
@@ -338,49 +346,52 @@ def makeLibrary():
             getencryptionamount = int(getencryptionamount)
             getCommercialSeed = int(getCommercialSeed)
         except ValueError:
-            print("ERROR in convertSeedValues ; invalid seed provided!")
+            print(RED+"ERROR in convertSeedValues ; invalid seed provided!"+RESET)
             StopFunc("init")
             return
+        #TODO
         library=createLibrary(normallibrary, getinitseed, "init")
         createLibrary(library, getCommercialSeed, "commercial")
         for i in range(getencryptionamount):
             library = createLibrary(library, random.randint(100,9999999), "commercial")
         SeedInUse1 = CleansedAndDecodedSeed if seed_ispacked else cleansedSeed
         print("library in use:")
-        print(library)
+        print(BLUE+library+RESET)
         print("seed in use:")
-        print(SeedInUse1)
+        print(BLUE+SeedInUse1+RESET)
         print("encryption layer amount:")
-        print(encryptionamount)
+        print(BLUE+str(encryptionamount)+RESET)
 
 #displays the seed. either packed or raw
 def displaySeed():
-    print("displaying seed in use...")
+    print(BLUE+"displaying seed in use..."+RESET)
     if packMySeed:
         if packSeed(SeedInUse1,False) is not None:
-            print("seed is packed:")
-            print("--->   " + packSeed(SeedInUse1,False) + "   <---")
+            print(YELLOW+"seed is packed:"+RESET)
+            print(BLUE+"--->   " + packSeed(SeedInUse1,False) + "   <---"+RESET)
             print("packerLibrary:")
-            print(packerLibrary)
+            print(BLUE+packerLibrary+RESET)
         else:
+            print(RED+"ERROR: Unable to fetch seed. If you are sure that your seed was not tampered with, please report this." +RESET)
             StopFunc("displayseed")
             return
     else:
-        print("seed is unpacked:")
+        print(YELLOW+"seed is unpacked:"+RESET)
         print(SeedInUse1)
 
 #transfers your current seed and packerlibrary to the .enk file, overwrites previous values
 def writeToENK():
-    print(f"writing packed seed and packerLibrary into {fileLocation} ...")
+    print(BLUE+f"writing packed seed and packerLibrary into {fileLocation} ..."+RESET)
     try:
         test = SeedInUse1
     except NameError:
-        print("seed has not been defined yet. Try initiating before saving.")
+        print(RED+"ERROR seed has not been defined yet. Try initiating before saving."+RESET)
+        StopFunc("writeToENK")
         return
     try:
         test1 = packerLibrary
     except NameError:
-        print("packerLibrary has not been defined yet. Packing seed...")
+        print(YELLOW+"WARNING: packerLibrary has not been defined yet. Packing seed..."+RESET)
     if packSeed(SeedInUse1,False) is not None:
         MAGIC="ENKR"
         ENKversion = "1"
@@ -394,9 +405,10 @@ def writeToENK():
         with open(fileLocation,"w") as file:
             file.write(content)
     else:
+        print(RED+"ERROR: Unable to pack seed. If you are sure that your seed was not tampered with, please report this." +RESET)
         StopFunc("save/write")
         return
-    print(f"successfully written data to {fileLocation}")
+    print(GREEN+f"successfully written data to {fileLocation}"+RESET)
 
 # self explanatory
 def checkForBool(item: str):
@@ -404,7 +416,7 @@ def checkForBool(item: str):
         return True
     if item.split("=")[1] == "false" or item.split("=",1)[1] == "0":
         return False
-    print(f"ERROR: expected Boolean value (true/false/1/0) and got faulty value ('{item}')")
+    print(RED+f"ERROR: expected Boolean value (true/false/1/0) and got faulty value ('{item}')"+RESET)
     return None
 
 # self explanatory too
@@ -413,7 +425,7 @@ def checkForInt(item: str):
         intitem= int(item.split("=",1)[1])
         return intitem
     except ValueError:
-        print(f"ERROR: expected integer value and got faulty value ('{item}')")
+        print(RED+f"ERROR: expected integer value and got faulty value ('{item}')"+RESET)
         return None
 
 #this is an example of what a workflow used to look like:
@@ -427,9 +439,10 @@ def checkForInt(item: str):
 
 def testEncryption(mode: int):
     if mode == 1:
-        print("Running diagnostics...")
+        print(BLUE+"Running diagnostics..."+RESET)
     else:
-        print("Running backup diagnostics...")
+        print(BLUE+"Running backup diagnostics..."+RESET)
+    time.sleep(0.15)
     old_stdout=sys.stdout
     sys.stdout=open(os.devnull,"w")
     try:
@@ -439,28 +452,31 @@ def testEncryption(mode: int):
         decodeThat = execute("decipher", encodeThis, library, False)
     except Exception as e:
         sys.stdout=old_stdout
-        print(f"FATAL ERROR FOUND: {e}")
+        print(RED+f"FATAL ERROR FOUND: {e}"+RESET)
         print("This Release will thus not run.")
-        print("PLEASE REPORT THIS ERROR ON GITHUB ISSUES!")
-        print("the program will close in 5 seconds...")
+        print("PLEASE REPORT THIS ERROR ON GITHUB ISSUES!"+RESET)
+        if debug:
+            traceback.print_exc()
+        print(YELLOW+"the program will close in 5 seconds..."+RESET)
         time.sleep(5)
         exit()
     if decodeThat != "Hello World! 0.7&3 <- hope that works...":
         sys.stdout=old_stdout
-        print("EXCEPTION FOUND: Incorrect decoding results")
+        print(RED+"EXCEPTION FOUND: Incorrect decoding results")
         print("This Release will thus not run.")
-        print("PLEASE REPORT THIS ERROR ON GITHUB ISSUES!")
-        print("the program will close in 5 seconds...")
+        print("PLEASE REPORT THIS ERROR ON GITHUB ISSUES!"+RESET)
+        print(YELLOW+"the program will close in 5 seconds..."+RESET)
         print(encodeThis)
         print(decodeThat)
         time.sleep(5)
         exit()
     sys.stdout=old_stdout
-    print("Testing completed successfully!")
+    print(GREEN+"Testing completed successfully!"+RESET)
     global SeedInUse1,importseed,packerLibrary
     del SeedInUse1,packerLibrary
     library=""
     importseed=r""
+    time.sleep(0.1)
 
 def mktxt(name: str, content: str):
     name = name if name.endswith(".txt") else name + ".txt"
@@ -490,7 +506,7 @@ intro()
 #    :         :   : :   :   : :  :: : :    : :: ::    :   : :  :::  
 
 while True:
-    prompt = input("NHH: awaiting input >  ")
+    prompt = input(GREEN + "NHH: awaiting input >  " + RESET)
 
         #####################
         #HELP RELATED TOPICS#
@@ -499,31 +515,32 @@ while True:
     #CHECKING FOR help REQUEST
     if prompt.lower() == "help":
         # get ready... FOR PRINT HELL!
-        print("\n-- HELP MENU --")
+        print(BLUE+"\n-- HELP MENU --"+RESET)
         print('type "help" followed by a certain command or term to view advanced information about it (type "help list" to view all terms that have help data)\n') 
-        print('type "explain" to receive a tutorial on how to use ENKRIPTO\n') # TODO
+        print('type "explain" to receive a tutorial on how to use ENKRIPTO\n')
         print("capitalization doesn't matter\n")
         print("Enkripto uses it's own mini parsing language: NHH - Native Handling Hub\n")
         print("parameters: {parameter_name: parameter_type} ; function aliases: name1 / name2  (either works. just pick the one you prefer)\n")
-        print("to see all parameters, type 'all.params'\n")
+        print("to see all global parameters, type 'all.params'\n")
         print("parameter order does not matter\n")
         print('refrain from using any quotation marks in your prompts. strings are interpreted as such by default and will thus end up containing extra quotations mark in them, making them uninterpretable. if you set your seed to importseed = "123.456.789", the value will be ""123.456.789"".\n')
         print("the underscore ( _ ) can be left out in parameter names ( seed_ispacked = seedispacked )\n")
         print("If parameters are not provided ENKRIPTO will vent to defaults \n")
-        print("startup preferences are stored in preferences.json")
-        print("-- COMMANDS --\n")
-        print("resetfile - resets the txt file to default values\n")
-        print("initiate / init {createnew: bool} , {readfromENK: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool} - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
-        print("(function).params - shows a function's params and their current values \n") 
-        print("save / write {filelocation: str} - packs and saves current seed in a txt.\n⤤ type 'help save' or 'help write' for a parameter explanation\n")
-        print("displayseed / display {packmyseed / pack: bool} - displays the current seed in use. if packmyseed / pack is true, it will be displayed as a packed seed. Otherwhise it will be displayed in it's natural form.\n")
-        print("scan / list / ls - scans and lists current directory to make locating your save .txt file easier.\n")
-        print("currentpath / cwd / currentdir - displays your work directory's path.\n")
-        print("restoredefaults / defaults / default - restores all parameters to their default values.\n")
-        print("exit - closes the program\n")
-        print("setparams / setparam {createnew: bool} , {packmyseed / pack: bool} , {custom_packerlibrary / custompackerlibrary: str} , {importseed: str} , {seed_ispacked / seedispacked: bool} , {debug: bool} , {encryptionamount: int} , {filelocation: str} - command used to change certain parameters without executing any other functions. The debug parameter is a developer tool that shows extra information. Enabling it isn't recommended.\n")
-        print("encrypt / encode {msg / target: str} - encrypts the provided target message using your library.\n")
-        print("decipher / decode {msg / target: str} - decodes the provided target message using your library.\n")
+        print("startup preferences are stored in preferences.json\n")
+    elif prompt.lower() == "help commands":
+        print(YELLOW+"-- COMMANDS --\n"+RESET)
+        print(BLUE+"resetfile"+RESET+" - resets the txt file to default values\n")
+        print(BLUE+"initiate / init"+YELLOW+" {createnew: bool} , {readfromENK: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool}"+RESET+" - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
+        print(BLUE+"(function).params "+RESET+"- shows a function's params and their current values \n") 
+        print(BLUE+"save / write "+YELLOW+"{filelocation: str} "+RESET+"- packs and saves current seed in a txt.\n⤤ type 'help save' or 'help write' for a parameter explanation\n")
+        print(BLUE+"displayseed / display "+YELLOW+"{packmyseed / pack: bool}"+RESET+" - displays the current seed in use. if packmyseed / pack is true, it will be displayed as a packed seed. Otherwhise it will be displayed in it's natural form.\n")
+        print(BLUE+"scan / list / ls "+RESET+"- scans and lists current directory to make locating your save .txt file easier.\n") #TODO
+        print(BLUE+"currentpath / cwd / currentdir "+RESET+"- displays your work directory's path.\n")
+        print(BLUE+"restoredefaults / defaults / default "+RESET+"- restores all parameters to their default values.\n")
+        print(BLUE+"exit "+RESET+"- closes the program\n")
+        print(BLUE+"setparams / setparam "+YELLOW+"{createnew: bool} , {packmyseed / pack: bool} , {custom_packerlibrary / custompackerlibrary: str} , {importseed: str} , {seed_ispacked / seedispacked: bool} , {debug: bool} , {encryptionamount: int} , {filelocation: str} "+RESET+"- command used to change certain parameters without executing any other functions. The debug parameter is a developer tool that shows extra information. Enabling it isn't recommended.\n")
+        print(BLUE+"encrypt / encode "+YELLOW+"{msg: str} . {target: str} "+RESET+"- encrypts the provided target message using your library. Use msg for raw text and target for txts.\n")
+        print(BLUE+"decipher / decode "+YELLOW+"{msg / target: str} "+RESET+"- decodes the provided target message using your library.\n")
     #CHECKING FOR help REQUESTS AND FURTHER ARGS
     elif prompt.lower() == "help initiate" or prompt.lower() == "help init":
         print("-- ADVANCED HELP MENU - ENTRY 01 --\n")
@@ -539,6 +556,8 @@ while True:
         print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted .enk file. This can be an absolute path (C:\\myprojects/enkfiles/save.enk) or a relative path (enkfiles/save.enk (if you are currently in the myprojects directory)). If you don't have an .enk file yet, one will be created for you if you execute the 'save' or 'write' command after initiating")
     elif prompt.lower() == "help list":
         print("-- LIST OF ALL COMMANDS WITH HELP DATA --\n")
+        print("type 'help' followed by the entry name to view it (e.g 'help comands')")
+        print("00 - COMMANDS\n")
         print("01 - INIT(IATE)\n")
         print("02 - SAVE / WRITE\n")
         print("03 - SEEDS\n")
@@ -730,6 +749,8 @@ while True:
         print("See you next time!")
         time.sleep(0.75)
         exit()
+    elif prompt.lower() == "viewprefs" or prompt.lower() =="viewpreferences" or prompt.lower() == "showprefs" or prompt.lower() == "showpreferences":
+        fetchPreferences(True)
     #saves seed-data to an .enk file.
     elif prompt.lower().startswith("save") or prompt.lower().startswith("write"):
         params = prompt.lower().removeprefix("save").replace(" ","").split(",") if prompt.lower().startswith("save") else prompt.lower().removeprefix("write").replace(" ","").split(",")

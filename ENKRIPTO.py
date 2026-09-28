@@ -7,11 +7,15 @@ import traceback
 
 YELLOW = "\033[93m"
 GREEN = "\033[1;92m"
+PROMPTPINK = "\033[1;95m"
 RESET = "\033[0m"
 RED = "\033[91m"
 BLUE = "\033[96m"
+GREY = "\033[38;2;143;163;191m"
+DIRBLUE = "\033[38;2;91;158;230m"
+DIRRED = "\033[38;2;230;168;91m"
 # TODO documentation for mktxt & showprefs
-#split help menu into parts
+#colors!
 
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
@@ -113,7 +117,7 @@ def intro():
                                      gV$$²'                       $$$$$                                    
                                                                   $$$$$                                    
                                                                   $$$$$                                     ''' + RESET)
-    print(BLUE+"-- ENKRIPTO v2.3.4 --\n"+RESET+"type 'help' to see a list of commands or a command's function")
+    print(BLUE+"-- ENKRIPTO v2.3.4 --\n"+GREY+"type 'help' to see a list of commands or a command's function"+RESET)
 #TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
 
 #MADE BY A SINGLE DUDE - EXPECT BUGS - ALTHOUGH I HAVEN'T SEEN ANY
@@ -150,7 +154,7 @@ packMySeed: bool = True
 packerLibrary = None
 
 debug = False
-if __name__ == "__main__":
+if __name__ == "__main__" and not getattr(sys, "frozen", False):
     debug = True
 # used to exit upon self-raised errors
 def StopFunc(func: str):
@@ -258,12 +262,12 @@ def makeLibrary():
             library = createLibrary(library , random.randint(100,9999999),"none")
         SeedInUse1 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
         print(BLUE+"creating new seed..."+RESET)
-        print(YELLOW+"layers:"+RESET)
-        print(BLUE+str(encryptionamount)+RESET)
-        print(YELLOW+"library in use:"+RESET)
-        print(BLUE+library+RESET)
-        print(YELLOW+"seed in use:"+RESET)
-        print(BLUE+SeedInUse1+RESET)
+        print(GREY+"layers:"+RESET)
+        print(GREEN+str(encryptionamount)+RESET)
+        print(GREY+"library in use:"+RESET)
+        print(GREEN+library+RESET)
+        print(GREY+"seed in use:"+RESET)
+        print(GREEN+SeedInUse1+RESET)
         packerLibrary = None
     elif readFromENK or importseed:
         #behold, the legendary ENK file interpreter:
@@ -506,7 +510,7 @@ intro()
 #    :         :   : :   :   : :  :: : :    : :: ::    :   : :  :::  
 
 while True:
-    prompt = input(GREEN + "NHH: awaiting input >  " + RESET)
+    prompt = input(PROMPTPINK + "NHH: awaiting input >  " + RESET)
 
         #####################
         #HELP RELATED TOPICS#
@@ -543,8 +547,8 @@ while True:
         print(BLUE+"decipher / decode "+YELLOW+"{msg / target: str} "+RESET+"- decodes the provided target message using your library.\n")
     #CHECKING FOR help REQUESTS AND FURTHER ARGS
     elif prompt.lower() == "help initiate" or prompt.lower() == "help init":
-        print("-- ADVANCED HELP MENU - ENTRY 01 --\n")
-        print("INIT(IATE) FUNCTION:\n")
+        print(BLUE+"-- ADVANCED HELP MENU - ENTRY 01 --\n"+RESET)
+        print(GREEN+"INIT(IATE) FUNCTION:\n"+RESET)
         print("general info:\nthe initiate function is used to kickstart the process of generating your library and seed. It is highly customizeable due to it's variety in different parameters (params). It is imperative that this function has been called before any other functions may run because it sets the baseline for any other further tools this module contains. It can not only create a new library and seed etc. , but it can also be used to import already existing seed-data, either from a .txt file, or using the data's manual input. your choice.\n")
         print("parameters:\n")
         print("NAME:\ncreatenew\nTYPE:\nBool\nUSECASE:\nif set to True, an entirely new seed and library will be generated in the initiation process. given data like readfromENK, importseed, custompackerlibrary and more will be ignored, however params used solely for creation like encryptionamount will be utilized. If it is set to False, the initiation process will try to import any given values. It will first check if readfromENK is enabled (if so it will import the values from the .txt file) and then check for custom values (if none exist, hardcoded default values will be used. I advise against this, because encrypto relies on the diversity of it's encryption schemes, so using a singular fixed library and/or seed might bring up safety issues.)")
@@ -555,8 +559,8 @@ while True:
         print("\nNAME:\nencryptionamount\nTYPE:\nInt\nUSECASE:\nparameter that defines the amount of times your library will encrypt itself. This param is only used when creating a new library and it's default is a random integer.")
         print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted .enk file. This can be an absolute path (C:\\myprojects/enkfiles/save.enk) or a relative path (enkfiles/save.enk (if you are currently in the myprojects directory)). If you don't have an .enk file yet, one will be created for you if you execute the 'save' or 'write' command after initiating")
     elif prompt.lower() == "help list":
-        print("-- LIST OF ALL COMMANDS WITH HELP DATA --\n")
-        print("type 'help' followed by the entry name to view it (e.g 'help comands')")
+        print(BLUE+"-- LIST OF ALL COMMANDS WITH HELP DATA --\n"+RESET)
+        print(GREY+"type 'help' followed by the entry name to view it (e.g 'help comands')"+RESET)
         print("00 - COMMANDS\n")
         print("01 - INIT(IATE)\n")
         print("02 - SAVE / WRITE\n")
@@ -614,7 +618,7 @@ while True:
             print(f"fileLocation = {fileLocation}")
             print(f"packMySeed = {packMySeed}")
         except NameError:
-            print("seed has not been defined yet. Try initiating before saving.")
+            print(RED+"ERROR: seed has not been defined yet. Try initiating before saving."+RESET)
         ##########
         #COMMANDS#
         ##########
@@ -660,7 +664,7 @@ while True:
                         custom_PackerLibrary = libraryScanner
                         modifiedParamsList.append(f"custom_packerlibrary = {custom_PackerLibrary}")
                     else:
-                        print("lethal spaces detected in custom_packerlibrary! Try defining this parameter without any spaces inbetween (custompackerlibrary=...)")
+                        print(RED+"ERROR: lethal spaces detected in custom_packerlibrary! Try defining this parameter without any spaces inbetween (custompackerlibrary=...)"+RESET)
                         paramexception = True
                 elif i.replace(" ","").startswith("importseed="):
                     libraryScanner = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
@@ -671,7 +675,7 @@ while True:
                         importseed = libraryScanner
                         modifiedParamsList.append(f"importseed = {importseed}")
                     else:
-                        print("lethal spaces detected in importseed! Try defining this parameter without any spaces inbetween (parameter=value)")
+                        print(RED+"ERROR: lethal spaces detected in custom_packerlibrary! Try defining this parameter without any spaces inbetween (custompackerlibrary=...)"+RESET)
                         paramexception = True
                     if checkForBool(i.replace(" ","")) is not None:
                         seed_ispacked = checkForBool(i.replace(" ",""))
@@ -692,39 +696,39 @@ while True:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
-                        print(f"invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
-                        print("only '.enk' files are allowed to save enkripto data")
+                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                     else:
-                        print(f"invalid filetype '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
-                        print("only '.enk' files are allowed to save enkripto data")
+                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
                             print(modifiedParamsList)
-                        print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
-                    print(f"invalid parameter definement ('{i}')")
+                        print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
+                    print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         # safe way of handling exceptions while still respecting other parameter changes, so that every param will be modified except for the one with the faulty value.
-        # the process also gets aborted when a parameter definement is faulty, so that execution with the wrong or even fatal params can be prevented.
+        # the process also gets aborted when a parameter definement is faulty, so that execution with wrong or even fatal params can be prevented.
         if paramexception:
-            print("initiation aborted.")
+            print(YELLOW+"initiation aborted."+RESET)
         else:
             if len(params) > 0 and params[0] != "":
-                print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
+                print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
             makeLibrary()
     #pretty cool tool: essentially just like bash's or linux's "ls". scans current work directory and lists directories and files.
     elif prompt.lower() == "scan" or prompt.lower() =="list" or prompt.lower() =="ls":
-        print("displaying files and directories in current directory:")
+        print(GREEN+"displaying files and directories in current directory:"+RESET)
         for file in os.listdir():
             if os.path.isdir(file):
-                print(f"DIR : {file}")
+                print(DIRBLUE+f"DIR : {file}"+RESET)
             else:
-                print(f"FILE: {file}")
+                print(DIRRED+f"FILE: {file}"+RESET)
     #displays current work directory path.
     elif prompt.lower() =="currentpath" or prompt.lower() =="cwd" or prompt.lower() =="currentdir":
-        print(f"current directory: {os.getcwd()}")
+        print(BLUE+"current directory:"+GREEN+f" {os.getcwd()}")
     #resets all parameters to default values.
     elif prompt.lower() =="restoredefaults" or prompt.lower() == "default" or prompt.lower() == "defaults":
         createNew = True
@@ -741,19 +745,21 @@ while True:
         seed_ispacked = True
         encryptionamount =random.randint(100,500) 
         packMySeed = True
-        print("defaulting...\nsome true values are excluded due to their length:")
-        print(f"createnew = {createNew} \nreadfromENK = {readFromENK}\ncustom_packerlibrary = (default value)\nimportseed = (defaultvalue)\nseed_ispacked = {seed_ispacked}\nencryptionamount = {encryptionamount} (randomized)\npackmyseed = {packMySeed}\nfilelocation = {fileLocation}")
-        print("defaults restored!")
+        print(BLUE+"defaulting...\nsome true values are excluded due to their length:"+RESET)
+        print(BLUE+"createnew = "+GREEN+f"{createNew} \n"+BLUE+f"readfromENK = "+GREEN+f"{readFromENK}\n"+BLUE+f"custom_packerlibrary = "+YELLOW+f"(default value)\n"+BLUE+f"importseed = "+YELLOW+f"(default value)\n"+BLUE+f"seed_ispacked = "+GREEN+f"{seed_ispacked}\n"+BLUE+f"encryptionamount = "+BLUE+f"{encryptionamount} "+YELLOW+"(randomized)\n"+BLUE+f"packmyseed = "+GREEN+f"{packMySeed}\n"+BLUE+f"filelocation = "+GREEN+f"{fileLocation}")
+        print(GREEN+"defaults restored!"+RESET)
     #exits and tips the program's virtual hat to the user.
     elif prompt.lower() == "exit":
-        print("See you next time!")
+        print(DIRBLUE+"See you next time!"+RESET)
         time.sleep(0.75)
-        exit()
+        sys.exit()
     elif prompt.lower() == "viewprefs" or prompt.lower() =="viewpreferences" or prompt.lower() == "showprefs" or prompt.lower() == "showpreferences":
         fetchPreferences(True)
     #saves seed-data to an .enk file.
     elif prompt.lower().startswith("save") or prompt.lower().startswith("write"):
         params = prompt.lower().removeprefix("save").replace(" ","").split(",") if prompt.lower().startswith("save") else prompt.lower().removeprefix("write").replace(" ","").split(",")
+        caseSensitiveParams = prompt[9:].split(",") if prompt.lower().startswith("setparams") else prompt[8:].split(",")
+        casesensitivecounter = 0
         if debug:
             print(params)
         paramexception = False
@@ -761,6 +767,7 @@ while True:
             modifiedParamsList = []
             paramexception = False
             for i in params:
+                casesensitivecounter += 1
                 if i.replace(" ","").startswith("filelocation="):
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
@@ -769,17 +776,18 @@ while True:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
-                        print(f"invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
-                        print("only '.enk' files are allowed to save enkripto data")
+                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                     else:
-                        print(f"invalid filetype '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
-                        print("only '.enk' files are allowed to save enkripto data")
+                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
                             print(modifiedParamsList)
+                            # HERE HERE HERE HERE HERE HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
                     print(f"invalid parameter definement ('{i}')")
                     paramexception = True
@@ -805,20 +813,20 @@ while True:
                 elif i.replace(" ","").startswith("name="):
                     mktxtname =  i.replace(" ","").split("=",1)[1]
                 else:
-                    print(f"invalid parameter definement ('{i}')")
+                    print(RED+f"invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
             if paramexception:
-                print("initiation aborted.")
+                print(YELLOW+"initiation aborted."+RESET)
             elif mktxtname is not None:
                 if contents == "":
-                    print("WARNING: contents not defined. creating empty txt...")
+                    print(YELLOW+"WARNING: contents not defined. creating empty txt..."+RESET)
                 else:
                     print("creating txt...")
                 print(mktxt(mktxtname,contents))
             else:
-                print("ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added")
+                print(RED+"ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added"+RESET)
         else:
-            print("ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added")
+            print(RED+"ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added"+RESET)
 
     #displays the seed.
     elif prompt.lower().startswith("displayseed") or prompt.lower().startswith("display"):
@@ -838,13 +846,13 @@ while True:
                         if debug:
                             print(modifiedParamsList)
                         print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
-                    print(f"invalid parameter definement ('{i}')")
+                    print(RED+f"invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         if paramexception:
-            print("initiation aborted.")
+            print(YELLOW+"initiation aborted."+RESET)
         else:
             if len(params) > 0 and params[0] != "":
-                print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
+                print(GREEN+f"parameters succesfully modified: {" , ".join(modifiedParamsList)}"+RESET) if len(modifiedParamsList) > 1 else print(GREEN+f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
             displaySeed()
     #sets parameters to custom values. as long as their type and content is allowed. This isn't that kind of playground.
     elif prompt.lower().startswith("setparams") or prompt.lower().startswith("setparam"):
@@ -963,8 +971,11 @@ while True:
                 casesensitivecounter =+ 1
                 if i.replace(" ","").startswith("msg="):
                     if library != "":
-                        print("encrypting...")
-                        print(execute("encrypt", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True))
+                        if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] != "" and " ":
+                            print(BLUE+"encrypting..."+RESET)
+                            print(GREEN+execute("encrypt", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True)+RESET)
+                        else:
+                            print(RED+"ERROR: can't encrypt emptiness, broh... (msg was set to nothing)" + RESET)
                     else:
                         print("no current library exists! Please initiate first.")
                 elif i.replace(" ","").startswith("target="):
@@ -1008,8 +1019,11 @@ while True:
                 casesensitivecounter =+ 1
                 if i.replace(" ","").startswith("msg="):
                     if library != "":
-                        print("decoding...")
-                        print(execute("decipher", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True))
+                        if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] != "" and " ":
+                            print(BLUE+"decoding..."+RESET)
+                            print(GREEN+execute("decipher", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True)+RESET)
+                        else:
+                            print(RED+"ERROR: can't decipher emptiness, broh... (msg was set to nothing)" + RESET)
                     else:
                         print("no current library exists! Please initiate first.")
                 elif i.replace(" ","").startswith("target="):

@@ -29,7 +29,7 @@ def fetchPreferences(withStatus: bool = False):
         with open("preferences.json","r") as file:
             Preferences = json.load(file)
     except FileNotFoundError:
-        print(RED + "no preferences.json found. Creating new with default values..." + RESET)
+        print(YELLOW + "WARNING: no preferences.json found. Creating new with default values..." + RESET)
         with open("preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
@@ -38,7 +38,7 @@ def fetchPreferences(withStatus: bool = False):
                         "createnew": 1,
                         "readfromENK": 0}
     except json.JSONDecodeError:
-            print(RED + "no preferences.json contains invalid JSON. restoring default values..." +RESET)
+            print(YELLOW + "WARNING: no preferences.json contains invalid JSON. restoring default values..." +RESET)
             with open("preferences.json","w") as file:
                 json.dump({"filelocation":"Default.enk",
                         "createnew": 1,
@@ -48,7 +48,7 @@ def fetchPreferences(withStatus: bool = False):
                             "readfromENK": 0}
     def defaultpref():
         global preference
-        print(RED+"invalid preferences.json provided. Setting default values..."+RESET)
+        print(RED+"FATAL WARNING: invalid preferences.json provided. Setting default values..."+RESET)
         with open("preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
@@ -66,7 +66,7 @@ def fetchPreferences(withStatus: bool = False):
             if i.endswith(".enk"):
                 fileLocation = i
             else:
-                print(RED+f"invalid preference '{i}'. Using default value..."+RESET)
+                print(YELLOW+f"WARNING: invalid preference '{i}'. Using default value..."+RESET)
                 with open("preferences.json","w") as file:
                     Preferences["filelocation"] = "Default.enk"
                     json.dump(Preferences,file,indent=4)
@@ -80,20 +80,20 @@ def fetchPreferences(withStatus: bool = False):
                 else:
                     readFromENK=bool(int(i))
             else:
-                print(RED+f"invalid preference '{i}'. Using default value..."+RESET)
+                print(YELLOW+f"WARNING: invalid preference '{i}'. Using default value..."+RESET)
                 if indexCounter==2:
                     with open("preferences.json","w") as file:
                         Preferences["createnew"] = 1
                         json.dump(Preferences,file,indent=4)
                     createNew = True
                 else:
-                    print(RED+f"invalid preference '{i}'. Using default value..."+RESET)
+                    print(YELLOW+f"WARNING: invalid preference '{i}'. Using default value..."+RESET)
                     with open("preferences.json","w") as file:
                         Preferences["readfromENK"] = 0
                         json.dump(Preferences,file,indent=4)
                     readFromENK=False
     if withStatus:
-        print(f"preferences:\n{" , ".join(Preferences)}")
+        print(GREY+"preferences:\n"+GREEN+f"{" , ".join(Preferences)}"+RESET)
     else:
         print(GREEN+"preferences imported!"+RESET)
 

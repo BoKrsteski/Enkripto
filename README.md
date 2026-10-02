@@ -18,7 +18,7 @@ I am intentionally not explaining every part of how the system works here. Some 
 
 ## How to download Enkripto
 
-Simply go to the releases section (located on the left) and select the version you want to download. usually the updates are documented, if not you can look at the commit history. I recommend always getting the latest version, though.
+Simply go to the releases section (located on the right) and select the version you want to download. usually the updates are documented, if not you can look at the commit history. I recommend always getting the latest version, though.
 
 ### OS specific downloads
 

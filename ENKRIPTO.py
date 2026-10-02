@@ -493,7 +493,8 @@ def mktxt(name: str, content: str):
 
 def AQcreator():
     while True:
-        print(PROMPTPINK+"AutoQueryCreator: Enter Prompt > "+RESET)
+        AQprompt = input(PROMPTPINK+"AutoQueryCreator: Enter Prompt > "+RESET)
+
 
 # IMPORTANT main workflow:
 fetchPreferences()
@@ -514,9 +515,12 @@ intro()
 #   :!:       :!:  !:!  :!:  !:!      !:!   :!:       :!:  !:!  :!:  
 #    ::       ::   :::  ::   :::  :::: ::    :: ::::  ::   :::  :::  
 #    :         :   : :   :   : :  :: : :    : :: ::    :   : :  :::  
-
+AQmode: bool = False
 while True:
-    prompt = input(PROMPTPINK + "NHH: awaiting input >  " + RESET)
+    if AQmode:
+        prompt = input(PROMPTPINK+"AutoQueryCreator: Enter Prompt > "+RESET)
+    else:
+        prompt = input(PROMPTPINK + "NHH: awaiting input >  " + RESET)
 
         #####################
         #HELP RELATED TOPICS#
@@ -1071,7 +1075,7 @@ while True:
             for i in params:
                 casesensitivecounter =+ 1
                 if i.replace(" ","").startswith("create"):
-                    AQcreator()
+                    AQmode = True
     else:
         print(RED+"ERROR: unknown query: '"+YELLOW+f"{prompt.lower().split(" ")[0]}"+RED+"'"+RESET)
 

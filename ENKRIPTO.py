@@ -15,7 +15,7 @@ GREY = "\033[38;2;143;163;191m"
 DIRBLUE = "\033[38;2;91;158;230m"
 DIRRED = "\033[38;2;230;168;91m"
 # TODO documentation for mktxt & showprefs
-#colors!
+#AQcreator. last function in regs!!!!!!!!
 
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
@@ -118,6 +118,8 @@ def intro():
                                                                   $$$$$                                    
                                                                   $$$$$                                     ''' + RESET)
     print(BLUE+"-- ENKRIPTO v2.3.4 --\n"+GREY+"type 'help' to see a list of commands or a command's function"+RESET)
+    if debug:
+        print(YELLOW+"WARNING: debug active!"+RESET)
 #TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
 
 #MADE BY A SINGLE DUDE - EXPECT BUGS - ALTHOUGH I HAVEN'T SEEN ANY
@@ -203,8 +205,8 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = cr
     if method == "encrypt":
         encrypted_message = ""
         if outputMode:
-            print("provided message to encrypt:")
-            print(BLUE+message+RESET)
+            print(GREY+"provided message to encrypt:"+RESET)
+            print(DIRBLUE+message+RESET)
         if debug:
             print(normallibrary)
         for i in message:
@@ -214,7 +216,7 @@ def execute(method:str ="encrypt", message:str = "lorem ipsum", library:str = cr
                 return print(RED+f"ERROR: the Enkripto library currently does not support use of the character '{i}'. Please make sure to leave this particular character out during your next attempt"+RESET)
             encrypted_message += library[location]
         if outputMode:
-            print("encrypted message:")
+            print(GREY+"encrypted message:"+RESET)
         return encrypted_message
     elif method == "decrypt" or method == "decipher":
         decrypted_message = ""
@@ -488,6 +490,10 @@ def mktxt(name: str, content: str):
         write = content if content else ""
         file.write(write)
     return name
+
+def AQcreator():
+    while True:
+        print(PROMPTPINK+"AutoQueryCreator: Enter Prompt > "+RESET)
 
 # IMPORTANT main workflow:
 fetchPreferences()
@@ -788,14 +794,14 @@ while True:
                         if debug:
                             print(modifiedParamsList)
                             # HERE HERE HERE HERE HERE HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
-                    print(f"invalid parameter definement ('{i}')")
+                            print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
+                    print(RED+f"invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         if paramexception:
-            print("process aborted.")
+            print(YELLOW+"process aborted."+RESET)
         else:
             if len(params) > 0 and params[0] != "":
-                print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
+                print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
             writeToENK()
     elif prompt.lower().startswith("mktxt"):
         params = prompt.lower().removeprefix("mktxt").split(",")
@@ -821,7 +827,7 @@ while True:
                 if contents == "":
                     print(YELLOW+"WARNING: contents not defined. creating empty txt..."+RESET)
                 else:
-                    print("creating txt...")
+                    print(BLUE+"creating txt..."+RESET)
                 print(mktxt(mktxtname,contents))
             else:
                 print(RED+"ERROR: filename not defined! \nuse 'name=' to name the file. the '.txt' extension is not necessary, as it is auto-added"+RESET)
@@ -845,14 +851,14 @@ while True:
                     if len(modifiedParamsList) > 0:
                         if debug:
                             print(modifiedParamsList)
-                        print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
+                        print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
                     print(RED+f"invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         if paramexception:
             print(YELLOW+"initiation aborted."+RESET)
         else:
             if len(params) > 0 and params[0] != "":
-                print(GREEN+f"parameters succesfully modified: {" , ".join(modifiedParamsList)}"+RESET) if len(modifiedParamsList) > 1 else print(GREEN+f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
+                print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
             displaySeed()
     #sets parameters to custom values. as long as their type and content is allowed. This isn't that kind of playground.
     elif prompt.lower().startswith("setparams") or prompt.lower().startswith("setparam"):
@@ -897,7 +903,7 @@ while True:
                         custom_PackerLibrary = libraryScanner
                         modifiedParamsList.append(f"custom_packerlibrary = {custom_PackerLibrary}")
                     else:
-                        print("lethal spaces detected in custom_packerlibrary! Try defining this parameter without any spaces inbetween (parameter=value)")
+                        print(RED+"ERROR: lethal spaces detected in custom_packerlibrary! "+YELLOW+"Try defining this parameter without any spaces inbetween (parameter=value)"+RESET)
                         paramexception = True
                 elif i.replace(" ","").startswith("importseed="):
                     libraryScanner = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
@@ -908,7 +914,7 @@ while True:
                         importseed = libraryScanner
                         modifiedParamsList.append(f"importseed = {importseed}")
                     else:
-                        print("lethal spaces detected in importseed! Try defining this parameter without any spaces inbetween (parameter=value)")
+                        print(RED+"ERROR: lethal spaces detected in importseed! "+YELLOW+"Try defining this parameter without any spaces inbetween (parameter=value)"+RESET)
                         paramexception = True
                 elif i.replace(" ","").startswith("seed_ispacked=") or i.replace(" ","").startswith("seedispacked="):
                     if checkForBool(i.replace(" ","")) is not None:
@@ -936,26 +942,26 @@ while True:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
-                        print(f"invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
-                        print("only '.enk' files are allowed to save enkripto data")
+                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                     else:
-                        print(f"invalid filetype '{i.replace(" ","").split("=",1)[1]}'")
-                        print("only '.enk' files are allowed to save enkripto data")
+                        print(RED+f"ERROR: invalid filetype '{i.replace(" ","").split("=",1)[1]}'"+RESET)
+                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
                             print(modifiedParamsList)
-                        print(f"invalid parameter definement ('{i}')")
+                        print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
                         paramexception = True
             if len(params) > 0 and params[0] != "":
                 if len(modifiedParamsList) > 0:
-                    print(f"parameters succesfully modified: {" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}")
+                    print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(GREEN+"parameters succesfully modified: "+BLUE+f"{modifiedParamsList[0]}"+RESET)
                 else:
-                    print("invalid parameters provided.")
+                    print(RED+"ERROR:invalid or empty parameters provided."+RESET)
             else:
-                print("no parameters provided.")
+                print(RED+"ERROR: no parameters provided."+RESET)
     #encrypts the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("encrypt") or prompt.lower().startswith("encode"):
         params = prompt.lower().removeprefix("encrypt").split(",") if prompt.lower().startswith("encrypt") else prompt.lower().removeprefix("encode").split(",")
@@ -977,7 +983,7 @@ while True:
                         else:
                             print(RED+"ERROR: can't encrypt emptiness, broh... (msg was set to nothing)" + RESET)
                     else:
-                        print("no current library exists! Please initiate first.")
+                        print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
                 elif i.replace(" ","").startswith("target="):
                     if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
                         if library != "" and library is not None:
@@ -992,18 +998,18 @@ while True:
                                         file.write(newContents)
                                         print(f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully encoded!")
                             except FileNotFoundError:
-                                print(f"ERROR: File '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}' does not exist in this directory.")
+                                print(RED+f"ERROR: File "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
                         else:
-                            print("no current library exists! Please initiate first.")
+                            print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
                     elif "." in caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]:
-                        print(f"Invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                        print(RED+"ERROR: Invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
                     else:
-                        print(f"invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
+                        print(RED+"ERROR: invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RESET)
                 else:
-                    print(f"invalid parameter definement ('{i}')")
+                    print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         else:
-            print("no target message or file provided. aborting...")
+            print(RED+"no target message or file provided. "+YELLOW+"aborting..."+RESET)
     #deciphers the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("decipher") or prompt.lower().startswith("decode"):
         params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
@@ -1025,12 +1031,12 @@ while True:
                         else:
                             print(RED+"ERROR: can't decipher emptiness, broh... (msg was set to nothing)" + RESET)
                     else:
-                        print("no current library exists! Please initiate first.")
+                        print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
                 elif i.replace(" ","").startswith("target="):
                     if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
                         if library != "" and library is not None:
                             try:
-                                print(f"decoding {caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}...")
+                                print(BLUE+"decoding "+GREEN+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}"+BLUE+"..."+RESET)
                                 with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
                                     target = file.read()
                                 newContents = execute("decipher", target, library, False)
@@ -1038,20 +1044,36 @@ while True:
                                     with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
                                         file.write(newContents.replace("²", r"""
 """))
-                                print(f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully decoded!")
+                                print(GREEN+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully decoded!"+RESET)
                             except FileNotFoundError:
-                                print(f"ERROR: File '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}' does not exist in this directory.")
+                                print(RED+"ERROR: File "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
                         else:
-                            print("no current library exists! Please initiate first.")
+                            print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
                     elif "." in caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]:
-                        print(f"Invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'")
+                        print(RED+"ERROR: Invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
                     else:
-                        print(f"invalid file type '{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'")
+                        print(RED+"ERROR: invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RESET)
                 else:
-                    print(f"invalid parameter definement ('{i}')")
+                    print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         else:
-            print("no target message or file provided. aborting...")
+            print(RED+"ERROR: no target message or file provided. aborting..."+RESET)
+    elif prompt.lower().startswith("autoquery") or prompt.lower().startswith("aq"):
+        params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
+        caseSensitiveParams = prompt[8:].split(",")  if prompt.lower().startswith("decipher") else prompt[6:].split(",")
+        casesensitivecounter = 0
+        if debug:
+            print(params)
+        paramexception: bool = False
+        if len(params) > 0 and params[0] != "":
+            modifiedParamsList = []
+            paramexception = False
+            for i in params:
+                casesensitivecounter =+ 1
+                if i.replace(" ","").startswith("create"):
+                    AQcreator()
+    else:
+        print(RED+"ERROR: unknown query: '"+YELLOW+f"{prompt.lower().split(" ")[0]}"+RED+"'"+RESET)
 
 # to be honest i don't know what these used to do but they're great for reminiscing:
 # createNew = True

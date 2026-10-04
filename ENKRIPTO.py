@@ -16,6 +16,7 @@ DIRBLUE = "\033[38;2;91;158;230m"
 DIRRED = "\033[38;2;230;168;91m"
 # TODO documentation for mktxt & showprefs
 #AQcreator. last function in regs!!!!!!!!
+# init fileloaction should be filename becaus eit will only take enks in data/ENKs
 
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
@@ -26,11 +27,11 @@ def fetchPreferences(withStatus: bool = False):
     preferenceIdol = ["Default.enk",1,0]
     try:
         print(BLUE+"fetching preferences..."+RESET)
-        with open("preferences.json","r") as file:
+        with open("data/preferences/preferences.json","r") as file:
             Preferences = json.load(file)
     except FileNotFoundError:
         print(YELLOW + "WARNING: no preferences.json found. Creating new with default values..." + RESET)
-        with open("preferences.json","w") as file:
+        with open("data/preferences/preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
                     "readfromENK": 0},file,indent=4)
@@ -38,8 +39,8 @@ def fetchPreferences(withStatus: bool = False):
                         "createnew": 1,
                         "readfromENK": 0}
     except json.JSONDecodeError:
-            print(YELLOW + "WARNING: no preferences.json contains invalid JSON. restoring default values..." +RESET)
-            with open("preferences.json","w") as file:
+            print(YELLOW + "WARNING: preferences.json contains invalid JSON values. restoring default values..." +RESET)
+            with open("data/preferences/preferences.json","w") as file:
                 json.dump({"filelocation":"Default.enk",
                         "createnew": 1,
                         "readfromENK": 0},file,indent=4)
@@ -49,7 +50,7 @@ def fetchPreferences(withStatus: bool = False):
     def defaultpref():
         global preference
         print(RED+"FATAL WARNING: invalid preferences.json provided. Setting default values..."+RESET)
-        with open("preferences.json","w") as file:
+        with open("data/preferences/preferences.json","w") as file:
             json.dump({"filelocation":"Default.enk",
                     "createnew": 1,
                     "readfromENK": 0},file,indent=4)
@@ -67,7 +68,7 @@ def fetchPreferences(withStatus: bool = False):
                 fileLocation = i
             else:
                 print(YELLOW+f"WARNING: invalid preference '{i}'. Using default value..."+RESET)
-                with open("preferences.json","w") as file:
+                with open("data/preferences/preferences.json","w") as file:
                     Preferences["filelocation"] = "Default.enk"
                     json.dump(Preferences,file,indent=4)
                 fileLocation = "Default.enk"
@@ -82,13 +83,13 @@ def fetchPreferences(withStatus: bool = False):
             else:
                 print(YELLOW+f"WARNING: invalid preference '{i}'. Using default value..."+RESET)
                 if indexCounter==2:
-                    with open("preferences.json","w") as file:
+                    with open("data/preferences/preferences.json","w") as file:
                         Preferences["createnew"] = 1
                         json.dump(Preferences,file,indent=4)
                     createNew = True
                 else:
                     print(YELLOW+f"WARNING: invalid preference '{i}'. Using default value..."+RESET)
-                    with open("preferences.json","w") as file:
+                    with open("data/preferences/preferences.json","w") as file:
                         Preferences["readfromENK"] = 0
                         json.dump(Preferences,file,indent=4)
                     readFromENK=False
@@ -96,6 +97,13 @@ def fetchPreferences(withStatus: bool = False):
         print(GREY+"preferences:\n"+GREEN+f"{" , ".join(Preferences)}"+RESET)
     else:
         print(GREEN+"preferences imported!"+RESET)
+
+def checkdata():
+    print(BLUE+"checking for existing data..."+RESET)
+    os.makedirs("data/ENKs", exist_ok=True)
+    os.makedirs("data/autoqueries",exist_ok=True)
+    os.makedirs("data/preferences",exist_ok=True)
+    print(GREEN+"data check successful!"+RESET)
 
 
 normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@"""
@@ -355,7 +363,6 @@ def makeLibrary():
             print(RED+"ERROR in convertSeedValues ; invalid seed provided!"+RESET)
             StopFunc("init")
             return
-        #TODO
         library=createLibrary(normallibrary, getinitseed, "init")
         createLibrary(library, getCommercialSeed, "commercial")
         for i in range(getencryptionamount):
@@ -408,13 +415,13 @@ def writeToENK():
         packerlibrarylength = str(len(packerlibrary))
         lengthOfPackerlibrarylength=str(len(str(packerlibrarylength)))
         content = MAGIC + ENKversion + lengthOfseedDataLength + seedDataLength + lengthOfPackerlibrarylength + packerlibrarylength + seedData + packerlibrary
-        with open(fileLocation,"w") as file:
+        with open("data/ENKs/"+fileLocation,"w") as file:
             file.write(content)
     else:
         print(RED+"ERROR: Unable to pack seed. If you are sure that your seed was not tampered with, please report this." +RESET)
         StopFunc("save/write")
         return
-    print(GREEN+f"successfully written data to {fileLocation}"+RESET)
+    print(GREEN+f"successfully written data to data/ENKs/{fileLocation}"+RESET)
 
 # self explanatory
 def checkForBool(item: str):
@@ -454,7 +461,7 @@ def testEncryption(mode: int):
     try:
         makeLibrary()
         global library
-        encodeThis = execute("encrypt", "Hello World! 0.7&3 <- hope that works...", library,True)
+        encodeThis = execute("encrypt", r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@""", library,True)
         decodeThat = execute("decipher", encodeThis, library, False)
     except Exception as e:
         sys.stdout=old_stdout
@@ -466,7 +473,7 @@ def testEncryption(mode: int):
         print(YELLOW+"the program will close in 5 seconds..."+RESET)
         time.sleep(5)
         exit()
-    if decodeThat != "Hello World! 0.7&3 <- hope that works...":
+    if decodeThat != r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@""":
         sys.stdout=old_stdout
         print(RED+"EXCEPTION FOUND: Incorrect decoding results")
         print("This Release will thus not run.")
@@ -491,14 +498,47 @@ def mktxt(name: str, content: str):
         file.write(write)
     return name
 
-def AQcreator():
-    while True:
-        AQprompt = input(PROMPTPINK+"AutoQueryCreator: Enter Prompt > "+RESET)
+def snapshotAndReset():
+    global importseed,createNew,readFromENK,fileLocation,custom_PackerLibrary,seed_ispacked,encryptionamount,packMySeed
+    try:
+        global SeedInUse1,packerLibrary,library1
+        Seed1presence =True
+        snap_SeedInUse1 = SeedInUse1
+        snap_packerlibrary= packerLibrary
+        snap_library1 = library1
+    except NameError:
+        Seed1presence =False
+    snap_importseed = importseed
+    snap_createNew = createNew
+    snap_readFromENK = readFromENK
+    snap_fileLocation = fileLocation
+    snap_custom_packerlibrary = custom_PackerLibrary
+    snap_seed_ispacked = seed_ispacked
+    snap_encryptionamount = encryptionamount
+    snap_packmyseed= packMySeed
+    print(BLUE+"setting up temporary defaults..."+RESET)
+    createNew = True
+    readFromENK = False
+    library1 = createLibrary(normallibrary, random.randint(100,9999999), "init")
+    createLibrary(library1 , random.randint(100,9999999) , "commercial")
+    for i in range(encryptionamount):
+        library1 = createLibrary(library1 , random.randint(100,9999999),"none")
+    global commercialseed
+    global initseed
+    SeedInUse2 = str(initseed) + "." + str(encryptionamount) + "." + str(commercialseed)
+    packerLibrary=None
+    importseed=packSeed(SeedInUse2,True)
+    custom_packerLibrary = createLibrary(normallibrary, random.randint(1000,9898),"None")
+    seed_ispacked = True
+    encryptionamount =random.randint(100,500) 
+    packMySeed = True
 
 
 # IMPORTANT main workflow:
 fetchPreferences()
-time.sleep(0.25)
+time.sleep(0.1)
+checkdata()
+time.sleep(0.15)
 testEncryption(1)
 testEncryption(2)
 time.sleep(0.25)
@@ -518,10 +558,10 @@ intro()
 AQmode: bool = False
 while True:
     if AQmode:
-        prompt = input(PROMPTPINK+"AutoQueryCreator: Enter Prompt > "+RESET)
+        prompt = input(YELLOW+"AutoQueryCreator: Enter Query > "+RESET)
     else:
         prompt = input(PROMPTPINK + "NHH: awaiting input >  " + RESET)
-
+    unknownQery = False
         #####################
         #HELP RELATED TOPICS#
         #####################
@@ -546,7 +586,7 @@ while True:
         print(BLUE+"resetfile"+RESET+" - resets the txt file to default values\n")
         print(BLUE+"initiate / init"+YELLOW+" {createnew: bool} , {readfromENK: bool} , {filelocation: str} , {custom_packerlibrary: str} , {seed_ispacked: bool} , {encryptionamount: int} , {packmyseed: bool}"+RESET+" - initiates ENKRIPTO's library (re)creation process;\n⤤ type 'help initiate' or 'help init' for a parameter explanation\n")
         print(BLUE+"(function).params "+RESET+"- shows a function's params and their current values \n") 
-        print(BLUE+"save / write "+YELLOW+"{filelocation: str} "+RESET+"- packs and saves current seed in a txt.\n⤤ type 'help save' or 'help write' for a parameter explanation\n")
+        print(BLUE+"save / write "+YELLOW+"{name: str} "+RESET+"- packs and saves current seed in a txt.\n⤤ type 'help save' or 'help write' for a parameter explanation\n")
         print(BLUE+"displayseed / display "+YELLOW+"{packmyseed / pack: bool}"+RESET+" - displays the current seed in use. if packmyseed / pack is true, it will be displayed as a packed seed. Otherwhise it will be displayed in it's natural form.\n")
         print(BLUE+"scan / list / ls "+RESET+"- scans and lists current directory to make locating your save .txt file easier.\n") #TODO
         print(BLUE+"currentpath / cwd / currentdir "+RESET+"- displays your work directory's path.\n")
@@ -588,7 +628,7 @@ while True:
         print("SAVE / WRITE FUNCTION:\n")
         print("general info:\nthe save function saves your current seed in it's packed form and the library used to pack it in a .enk file of your choice. This allows for easier sharing of your seed-data, so that others can decode your previously encrypted messages easier.\n")
         print("parameters:")
-        print("\nNAME:\nfilelocation\nTYPE:\nString\nThe path to your mounted .enk file This can be an absolute path (C:\\myprojects/enkfiles/save.enk) or a relative path (enkfiles/save.enk (if you are currently in the myprojects directory)). If you don't have an .enk file yet, one will be created for you if you execute the 'save' command after initiating")
+        print("\nNAME:\nname\nTYPE:\nString\nThe path to your mounted .enk file This can be an absolute path (C:\\myprojects/enkfiles/save.enk) or a relative path (enkfiles/save.enk (if you are currently in the myprojects directory)). If you don't have an .enk file yet, one will be created for you if you execute the 'save' command after initiating")
     elif prompt.lower() == "help seeds":
         print("-- ADVANCED HELP MENU - ENTRY 03 --\n")
         print("SEEDS:\n")
@@ -629,9 +669,11 @@ while True:
             print(f"packMySeed = {packMySeed}")
         except NameError:
             print(RED+"ERROR: seed has not been defined yet. Try initiating before saving."+RESET)
+
         ##########
         #COMMANDS#
         ##########
+
     # checking for different commands:
     elif prompt.lower() == "resetfile":
         resetFile()
@@ -760,9 +802,17 @@ while True:
         print(GREEN+"defaults restored!"+RESET)
     #exits and tips the program's virtual hat to the user.
     elif prompt.lower() == "exit":
-        print(DIRBLUE+"See you next time!"+RESET)
-        time.sleep(0.75)
-        sys.exit()
+        if AQmode:
+            print(BLUE+"exiting..."+RESET)
+            AQmode = False
+            with open(targetfilePath,"w") as file:
+                file.write("\n".join(queryCollection))
+            print(GREEN+f"queries successfully saved to {targetfilePath}"+RESET)
+            #TODO reset variables
+        else:
+            print(DIRBLUE+"See you next time!"+RESET)
+            time.sleep(0.75)
+            sys.exit()
     elif prompt.lower() == "viewprefs" or prompt.lower() =="viewpreferences" or prompt.lower() == "showprefs" or prompt.lower() == "showpreferences":
         fetchPreferences(True)
     #saves seed-data to an .enk file.
@@ -778,7 +828,7 @@ while True:
             paramexception = False
             for i in params:
                 casesensitivecounter += 1
-                if i.replace(" ","").startswith("filelocation="):
+                if i.replace(" ","").startswith("name="):
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
@@ -790,14 +840,15 @@ while True:
                         print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                     else:
-                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
-                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
-                        paramexception = True
+                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] + ".enk"
+                        modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                        with open("preferences.json","w") as file:
+                            Preferences["filelocation"] = fileLocation
+                            json.dump(Preferences,file,indent=4)
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
                             print(modifiedParamsList)
-                            # HERE HERE HERE HERE HERE HERE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                             print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
                     print(RED+f"invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
@@ -1063,21 +1114,46 @@ while True:
         else:
             print(RED+"ERROR: no target message or file provided. aborting..."+RESET)
     elif prompt.lower().startswith("autoquery") or prompt.lower().startswith("aq"):
-        params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
-        caseSensitiveParams = prompt[8:].split(",")  if prompt.lower().startswith("decipher") else prompt[6:].split(",")
-        casesensitivecounter = 0
+        params = prompt.lower().removeprefix("autoquery").split(",") if prompt.lower().startswith("autoquery") else prompt.lower().removeprefix("aq").split(",")
         if debug:
             print(params)
         paramexception: bool = False
         if len(params) > 0 and params[0] != "":
             modifiedParamsList = []
-            paramexception = False
             for i in params:
-                casesensitivecounter =+ 1
                 if i.replace(" ","").startswith("create"):
-                    AQmode = True
+                    if i.replace(" ","")[6:] != "":
+                        name = i.replace(" ","")[6:]
+                        targetfile = name if name.endswith(".aq") else name + ".aq"
+                        targetfilePath = "data/autoqueries/"+ targetfile
+                        with open(targetfilePath,"w")as file:
+                            file.write("")
+                        print(BLUE+"Entering autoQuery creation mode..."+RESET)
+                        snapshotAndReset()
+                        AQmode = True
+                        queryCollection = []
+                        ignoreOne = True
+                        print(GREY+"type 'exit' to exit autoquery mode and save your queries in an .aq file" +RESET)
+                    else:
+                        print(RED+"ERROR: no name provided.\n"+YELLOW+"please provide a name (autoquery create {name})"+RESET)
+                        StopFunc("AQcreator")
     else:
         print(RED+"ERROR: unknown query: '"+YELLOW+f"{prompt.lower().split(" ")[0]}"+RED+"'"+RESET)
+        unknownQery = True
+    if AQmode:
+        if ignoreOne:
+            ignoreOne = False
+        else:
+            if not unknownQery:
+                if paramexception:
+                    print(RED+"query was not added because of a parameter exception"+RESET)
+                else:
+                    queryCollection.append(prompt)
+                    print(GREEN+"query added."+RESET)
+                    if debug:
+                        print(queryCollection)
+
+
 
 # to be honest i don't know what these used to do but they're great for reminiscing:
 # createNew = True

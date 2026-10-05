@@ -105,6 +105,11 @@ def checkdata():
     os.makedirs("data/preferences",exist_ok=True)
     print(GREEN+"data check successful!"+RESET)
 
+def checkDir(filepath):
+    dirpath = os.path.dirname(filepath)
+    if not os.path.isdir(dirpath):
+        print(YELLOW+f"WARNING: directory '{dirpath}' does not exist yet. "+BLUE+"creating dir..."+RESET)
+        os.makedirs(dirpath, exist_ok=True)
 
 normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@"""
 throwawaylibrary=normallibrary
@@ -342,9 +347,9 @@ def makeLibrary():
         if seed_ispacked:
             if cleanse(importseed) is not None:
                 cleansedSeed = cleanse(importseed)
-                print(BLUE+"cleansed seed: " + cleansedSeed+RESET)
+                print(GREY+"cleansed seed: " + BLUE +cleansedSeed+RESET)
                 CleansedAndDecodedSeed = execute("decrypt", cleansedSeed,packerLibrary)
-                print(BLUE+"decoded seed: " + CleansedAndDecodedSeed+RESET)
+                print(GREY+"decoded seed: " + BLUE+CleansedAndDecodedSeed+RESET)
             else:
                 print(RED+"ERROR in cleanseSeed ; invalid seed provided!"+RESET)
                 StopFunc("init")
@@ -369,9 +374,9 @@ def makeLibrary():
             library = createLibrary(library, random.randint(100,9999999), "commercial")
         SeedInUse1 = CleansedAndDecodedSeed if seed_ispacked else cleansedSeed
         print("library in use:")
-        print(BLUE+library+RESET)
+        print(GREEN+library+RESET)
         print("seed in use:")
-        print(BLUE+SeedInUse1+RESET)
+        print(GREEN+SeedInUse1+RESET)
         print("encryption layer amount:")
         print(BLUE+str(encryptionamount)+RESET)
 
@@ -394,6 +399,7 @@ def displaySeed():
 
 #transfers your current seed and packerlibrary to the .enk file, overwrites previous values
 def writeToENK():
+    global fileLocation
     print(BLUE+f"writing packed seed and packerLibrary into {fileLocation} ..."+RESET)
     try:
         test = SeedInUse1
@@ -415,13 +421,15 @@ def writeToENK():
         packerlibrarylength = str(len(packerlibrary))
         lengthOfPackerlibrarylength=str(len(str(packerlibrarylength)))
         content = MAGIC + ENKversion + lengthOfseedDataLength + seedDataLength + lengthOfPackerlibrarylength + packerlibrarylength + seedData + packerlibrary
-        with open("data/ENKs/"+fileLocation,"w") as file:
+        fileLocation = fileLocation if fileLocation.startswith("data/ENKs/") else "data/ENKs/" + fileLocation
+        checkDir(fileLocation)
+        with open(fileLocation,"w") as file:
             file.write(content)
     else:
         print(RED+"ERROR: Unable to pack seed. If you are sure that your seed was not tampered with, please report this." +RESET)
         StopFunc("save/write")
         return
-    print(GREEN+f"successfully written data to data/ENKs/{fileLocation}"+RESET)
+    print(GREEN+f"successfully written data to {fileLocation}"+RESET)
 
 # self explanatory
 def checkForBool(item: str):
@@ -580,7 +588,7 @@ while True:
         print('refrain from using any quotation marks in your prompts. strings are interpreted as such by default and will thus end up containing extra quotations mark in them, making them uninterpretable. if you set your seed to importseed = "123.456.789", the value will be ""123.456.789"".\n')
         print("the underscore ( _ ) can be left out in parameter names ( seed_ispacked = seedispacked )\n")
         print("If parameters are not provided ENKRIPTO will vent to defaults \n")
-        print("startup preferences are stored in preferences.json\n")
+        print("startup preferences are stored in data/preferences/preferences.json\n")
     elif prompt.lower() == "help commands":
         print(YELLOW+"-- COMMANDS --\n"+RESET)
         print(BLUE+"resetfile"+RESET+" - resets the txt file to default values\n")
@@ -693,7 +701,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["createnew"] = 1 if createNew else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -702,7 +710,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         readFromENK =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromENK = {readFromENK}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["readfromENK"] = 1 if readFromENK else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -742,9 +750,9 @@ while True:
                         paramexception = True
                 elif i.replace(" ","").startswith("filelocation="):
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
-                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
+                        fileLocation = "data/ENKs/"+caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
@@ -752,9 +760,11 @@ while True:
                         print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                     else:
-                        print(RED+f"ERROR: invalid filetype '{"." + caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
-                        print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
-                        paramexception = True
+                        fileLocation = "data/ENKs/"+caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]+".enk"
+                        modifiedParamsList.append(f"fileLocation = {fileLocation}")
+                        with open("data/preferences/preferences.json","w") as file:
+                            Preferences["filelocation"] = fileLocation
+                            json.dump(Preferences,file,indent=4)
                 else:
                     if len(modifiedParamsList) > 0:
                         if debug:
@@ -832,7 +842,7 @@ while True:
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:
@@ -842,7 +852,7 @@ while True:
                     else:
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] + ".enk"
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                 else:
@@ -932,7 +942,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"createnew = {createNew}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["createnew"] = 1 if createNew else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -944,7 +954,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:                        
                         readFromENK =checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"readFromENK = {readFromENK}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             preference[2] = 1 if readFromENK else 0
                             json.dump(Preferences,file,indent=4)
                     else:
@@ -993,7 +1003,7 @@ while True:
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
-                        with open("preferences.json","w") as file:
+                        with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
                             json.dump(Preferences,file,indent=4)
                     elif "." in i.replace(" ","").split("=",1)[1]:

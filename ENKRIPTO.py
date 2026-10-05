@@ -535,10 +535,10 @@ def snapshotAndReset():
 
 
 # IMPORTANT main workflow:
-fetchPreferences()
-time.sleep(0.1)
 checkdata()
 time.sleep(0.15)
+fetchPreferences()
+time.sleep(0.1)
 testEncryption(1)
 testEncryption(2)
 time.sleep(0.25)

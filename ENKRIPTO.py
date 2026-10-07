@@ -819,6 +819,7 @@ while True:
                 file.write("\n".join(queryCollection))
             print(GREEN+f"queries successfully saved to {targetfilePath}"+RESET)
             #TODO reset variables
+            
         else:
             print(DIRBLUE+"See you next time!"+RESET)
             time.sleep(0.75)

@@ -111,7 +111,7 @@ def checkDir(filepath):
         print(YELLOW+f"WARNING: directory '{dirpath}' does not exist yet. "+BLUE+"creating dir..."+RESET)
         os.makedirs(dirpath, exist_ok=True)
 
-normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@Â"""
+normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =°@Â"""
 throwawaylibrary=normallibrary
 library:str=""
 compatibleENKversions= ["1"]

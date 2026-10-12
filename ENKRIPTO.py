@@ -1054,7 +1054,7 @@ while True:
                     if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
                         if library != "" and library is not None:
                             try:
-                                print(f"encoding {caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}...")
+                                print(BLUE+"encoding "+GREEN+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}"+BLUE+"...")
                                 with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
                                     target = file.read().replace(r"""
 """, "²")
@@ -1062,7 +1062,7 @@ while True:
                                 if newContents is not None:
                                     with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
                                         file.write(newContents)
-                                        print(f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully encoded!")
+                                        print(BLUE+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}"+GREEN+" successfully encoded!"+RESET)
                             except FileNotFoundError:
                                 print(RED+f"ERROR: File "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
                         else:

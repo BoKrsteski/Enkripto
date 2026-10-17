@@ -15,15 +15,14 @@ while len(snaps) > 1:
     print(deletedCharactersSnap)
     newprompt = newprompt[:snaps[0] - deletedCharacters] + newprompt[snaps[1]+1 - deletedCharacters:]
     deletedCharacters = deletedCharactersSnap
-    snaps.remove(snaps[0])
-    snaps.remove(snaps[0])
+    del snaps[:2]
     allcontents.append(content)
 print("contents: "+ " , ".join(allcontents))
 params = newprompt.replace(" ","").split(",")
+print(newprompt)
 for i in range(len(params)):
     if "msg=" in params[i]:
         print("this:" + params[i])
         params[i] = params[i] + allcontents[0]
         allcontents.remove(allcontents[0])
 print(params)
-print(newprompt)

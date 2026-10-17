@@ -1078,10 +1078,14 @@ while True:
             print(RED+"no target message or file provided. "+YELLOW+"aborting..."+RESET)
     #deciphers the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("decipher") or prompt.lower().startswith("decode"):
+
         params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
         caseSensitiveParams = prompt[8:].split(",")  if prompt.lower().startswith("decipher") else prompt[6:].split(",")
         casesensitivecounter = 0
         if debug:
+
+
+
             print(params)
         paramexception: bool = False
         if len(params) > 0 and params[0] != "":

@@ -55,7 +55,7 @@ jobs:
       run: |
         mkdir release
         mkdir -p package
-        printf "hey there! \nAs you can see, this folder holds 2 similar files which can both be used to open Enkripto\n So here's how to execute/open Enkripto:\nUSING ENKRIPTO-STARTER:\nEnkripto-Starter is a .Desktop file that can directly open Enkripto if you double click it. It should also set its icon after the first execution.\nDIRECTLY USING ENKRIPTO:\nthe direct executable cannot be double clicked, as it will run in the background. Therefore you will have to execute the ./Enkripto command in the same directory as the file.\n\nalso, please ignore the png. It is used to set the Starter's Icon once it initially executes.\n\nHave fun encrypting!!!" > package/README.txt
+        printf "hey there! \n\nAs you can see, this folder holds 2 similar files which can both be used to open Enkripto\n\nSo here's how to execute/open Enkripto:\n\nUSING ENKRIPTO-STARTER:\nEnkripto-Starter is a Desktop file that can directly open Enkripto if you double click it. It should also set its icon after the first execution.\n\nDIRECTLY USING ENKRIPTO:\nthe direct executable cannot be double clicked, as it will run in the background. Therefore you will have to execute the ./Enkripto command in the same directory as the file.\n\nalso, please ignore the png. It is used to set the Starter's Icon once it initially executes.\n\nHave fun encrypting!!!" > package/README.txt
         cp dist/ENKRIPTO package/Enkripto
         cp icon.png package/icon.png
         chmod +x package/Enkripto

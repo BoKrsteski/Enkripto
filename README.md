@@ -32,7 +32,7 @@ if you are on any 64-bit linux distro, click the .tar.gz archive file to downloa
 #### windows:
 simply double-click the .exe file in your file explorer or type `start (path to the executable)/Enkripto-(installed version)-windows-x64.exe`
 #### linux:
-open the folder (or change directories to the one holding the tarball archive) and extract its contents. Then open a terminal in the folder if you haven't already, and run the `./Enkripto` command.
+either just execute the `Enkripto-Starter` file, or open the folder (or change directories to the one holding the tarball archive) and extract its contents. Then open a terminal in the folder if you haven't already, and run the `./Enkripto` command.
 
 ## what now?
 

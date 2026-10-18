@@ -57,6 +57,7 @@ jobs:
         mkdir -p package
 
         cp dist/ENKRIPTO package/Enkripto
+        cp icon.png package/icon.png
         chmod +x package/Enkripto
 
         cat > package/Enkripto-Starter.desktop <<'EOF'
@@ -64,6 +65,7 @@ jobs:
         Version=1.0
         Type=Application
         Name=Enkripto-Starter
+        Icon=icon.png
         GenericName=starter for Enkripto
         Comment=Enkripto is a local encryption tool based around randomness. this starter can be used for desktop execution via double click for example.
         Terminal=true

@@ -59,19 +59,19 @@ jobs:
         cp dist/ENKRIPTO package/Enkripto
         chmod +x package/Enkripto
 
-        cat > package/Enkripto.desktop <<'EOF'
+        cat > package/Enkripto-Starter.desktop <<'EOF'
         [Desktop Entry]
         Version=1.0
         Type=Application
         Name=Enkripto
-        Comment=Local encryption tool
+        Comment=starter for Enripto, a socal encryption tool based around randomness.
         Terminal=true
         Exec=sh -c "cd \"$(dirname \"$1\")\" && exec ./Enkripto" sh %k
         EOF
 
-        chmod +x package/Enkripto.desktop
+        chmod +x package/Enkripto-Starter.desktop
 
-        tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" -C package Enkripto Enkripto.desktop
+        tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" -C package Enkripto Enkripto-Starter.desktop
 
     - name: upload linux build
       if: matrix.os == 'ubuntu-latest'

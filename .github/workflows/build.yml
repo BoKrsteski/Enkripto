@@ -48,14 +48,31 @@ jobs:
       with:
         name: Enkripto-Windows-x64
         path: release/*
+    
     - name: prepare linux release
       if: matrix.os == 'ubuntu-latest'
       shell: bash
       run: |
         mkdir release
-        cp dist/ENKRIPTO Enkripto
-        chmod +x Enkripto
-        tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" Enkripto
+        mkdir -p package
+
+        cp dist/ENKRIPTO package/Enkripto
+        chmod +x package/Enkripto
+
+        cat > package/Enkripto.desktop <<'EOF'
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Enkripto
+        Comment=Local encryption tool
+        Terminal=true
+        Exec=sh -c "cd \"$(dirname \"$1\")\" && exec ./Enkripto" sh %k
+        EOF
+
+        chmod +x package/Enkripto.desktop
+
+        tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" -C package Enkripto Enkripto.desktop
+
     - name: upload linux build
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4

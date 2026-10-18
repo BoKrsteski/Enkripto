@@ -74,7 +74,7 @@ jobs:
 
         chmod +x package/Enkripto-Starter.desktop
 
-        tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" -C package Enkripto Enkripto-Starter.desktop
+        tar -czf "release/Enkripto-${{ steps.version.outputs.version }}-linux-x64.tar.gz" -C package Enkripto Enkripto-Starter.desktop icon.png
 
     - name: upload linux build
       if: matrix.os == 'ubuntu-latest'

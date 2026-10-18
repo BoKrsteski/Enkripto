@@ -1,5 +1,5 @@
 snaps = []
-prompt = 'decode msg = "hi how are you, because im doin great" , msg = "ahh, thats great to hear! mee too!"'
+prompt = 'decode msg = "hi how are you, because im doin great" , msg = "ahh, thats great to hear! me too!"'
 for i in range(len(prompt)):
     if prompt[i] == '''"''':
         snaps.append(i)

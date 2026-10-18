@@ -111,7 +111,7 @@ def checkDir(filepath):
         print(YELLOW+f"WARNING: directory '{dirpath}' does not exist yet. "+BLUE+"creating dir..."+RESET)
         os.makedirs(dirpath, exist_ok=True)
 
-normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =°@Â"""
+normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³}]{[.-;_: =°@Â,"""
 throwawaylibrary=normallibrary
 library:str=""
 compatibleENKversions= ["1"]
@@ -469,7 +469,7 @@ def testEncryption(mode: int):
     try:
         makeLibrary()
         global library
-        encodeThis = execute("encrypt", r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@""", library,True)
+        encodeThis = execute("encrypt", normallibrary, library,True)
         decodeThat = execute("decipher", encodeThis, library, False)
     except Exception as e:
         sys.stdout=old_stdout
@@ -481,7 +481,7 @@ def testEncryption(mode: int):
         print(YELLOW+"the program will close in 5 seconds..."+RESET)
         time.sleep(5)
         exit()
-    if decodeThat != r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³"}]{[.-;_: =@""":
+    if decodeThat != normallibrary:
         sys.stdout=old_stdout
         print(RED+"EXCEPTION FOUND: Incorrect decoding results")
         print("This Release will thus not run.")
@@ -585,7 +585,7 @@ while True:
         print("parameters: {parameter_name: parameter_type} ; function aliases: name1 / name2  (either works. just pick the one you prefer)\n")
         print("to see all global parameters, type 'all.params'\n")
         print("parameter order does not matter\n")
-        print('refrain from using any quotation marks in your prompts. strings are interpreted as such by default and will thus end up containing extra quotations mark in them, making them uninterpretable. if you set your seed to importseed = "123.456.789", the value will be ""123.456.789"".\n')
+        print('use "" for the msg parameter!.\n')
         print("the underscore ( _ ) can be left out in parameter names ( seed_ispacked = seedispacked )\n")
         print("If parameters are not provided ENKRIPTO will vent to defaults \n")
         print("startup preferences are stored in data/preferences/preferences.json\n")
@@ -1030,104 +1030,180 @@ while True:
                 print(RED+"ERROR: no parameters provided."+RESET)
     #encrypts the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("encrypt") or prompt.lower().startswith("encode"):
-        params = prompt.lower().removeprefix("encrypt").split(",") if prompt.lower().startswith("encrypt") else prompt.lower().removeprefix("encode").split(",")
-        caseSensitiveParams = prompt[7:].split(",")  if prompt.lower().startswith("encrypt") else prompt[6:].split(",")
+        # snaps system!
+        caseSensitiveParams = prompt[6:].split(",")
         casesensitivecounter = 0
+        snaps = []
+        paramexception = False
+        for i in range(len(prompt)):
+            if prompt[i] == '''"''':
+                snaps.append(i)
+        if len(snaps) % 2 != 0:
+            print(RED+"ERROR: unclosed string provided!\n "+YELLOW+" Note that you cannot use quoation marks within strings"+RESET)
+            paramexception=True
         if debug:
-            print(params)
-        paramexception: bool = False
-        if len(params) > 0 and params[0] != "":
-            modifiedParamsList = []
-            paramexception = False
-            for i in params:
-                casesensitivecounter =+ 1
-                if i.replace(" ","").startswith("msg="):
-                    if library != "":
-                        if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] != "" and " ":
-                            print(BLUE+"encrypting..."+RESET)
-                            print(GREEN+execute("encrypt", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True)+RESET)
-                        else:
-                            print(RED+"ERROR: can't encrypt emptiness, broh... (msg was set to nothing)" + RESET)
-                    else:
-                        print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
-                elif i.replace(" ","").startswith("target="):
-                    if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
-                        if library != "" and library is not None:
-                            try:
-                                print(BLUE+"encoding "+GREEN+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}"+BLUE+"...")
-                                with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
-                                    target = file.read().replace(r"""
-""", "²")
-                                newContents = execute("encrypt", target, library, False)
-                                if newContents is not None:
-                                    with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
-                                        file.write(newContents)
-                                        print(BLUE+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}"+GREEN+" successfully encoded!"+RESET)
-                            except FileNotFoundError:
-                                print(RED+f"ERROR: File "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
+            print(snaps)
+            print(len(snaps))
+        newprompt = prompt
+        deletedCharacters = 0
+        allcontents= []
+        while len(snaps) > 1:
+            content = prompt[:snaps[1]][snaps[0]+1:]
+            deletedCharactersSnap = len(newprompt[:snaps[1]+1 - deletedCharacters][snaps[0]-deletedCharacters:])
+            if debug:
+                print(newprompt[:snaps[1]+1-deletedCharacters][snaps[0]-deletedCharacters:])
+                print(deletedCharactersSnap)
+            newprompt = newprompt[:snaps[0] - deletedCharacters] + newprompt[snaps[1]+1 - deletedCharacters:]
+            deletedCharacters = deletedCharactersSnap
+            del snaps[:2]
+            allcontents.append(content)
+        if debug:
+            print("contents: "+ " , ".join(allcontents))
+            print(newprompt)
+        params = newprompt.replace(" ","").lower().split(",")
+        for i in range(len(params)):
+            if "msg=" in params[i]:
+                if debug:
+                    print("this:" + params[i])
+                try:
+                    params[i] = params[i] + allcontents[0]
+                    allcontents.remove(allcontents[0])
+                except IndexError:
+                    print(RED+'ERROR: msg parameter must be a string! '+YELLOW+'Try using msg="mymessage" '+RESET)
+                    paramexception=True
+        params[0] = params[0].removeprefix("encrypt") if params[0].startswith("encrypt") else params[0].removeprefix("encode")
+        if not paramexception:
+            if debug:
+                print(params)
+            if len(params) > 0 and params[0] != "":
+                modifiedParamsList = []
+                for i in params:
+                    casesensitivecounter += 1
+                    if i.replace(" ","").startswith("msg="):
+                        if library != "":
+                            if i.split("=",1)[1] != "" and " ":
+                                if not paramexception:
+                                    print(BLUE+"encrypting..."+RESET)
+                                    print(GREEN+execute("encrypt", i.split("=",1)[1], library,True)+RESET)
+                            else:
+                                print(RED+"ERROR: can't encrypt emptiness, broh... (msg was set to nothing)" + RESET)
                         else:
                             print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
-                    elif "." in caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]:
-                        print(RED+"ERROR: Invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                    elif i.replace(" ","").startswith("target="):
+                        if i.split("=",1)[1].endswith(".txt"):
+                            if library != "" and library is not None:
+                                if not paramexception:
+                                    try:
+                                        print(BLUE+"encoding "+GREEN+f"{i.split("=",1)[1]}"+BLUE+"...")
+                                        with open(i.split("=",1)[1],"r") as file:
+                                            target = file.read().replace(r"""
+""", "²")
+                                        newContents = execute("encrypt", target, library, False)
+                                        if newContents is not None:
+                                            with open(i.split("=",1)[1],"w") as file:
+                                                file.write(newContents)
+                                                print(BLUE+f"{i.split("=",1)[1]}"+GREEN+" successfully encoded!"+RESET)
+                                    except FileNotFoundError:
+                                        print(RED+f"ERROR: File "+YELLOW+f"'{i.split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
+                            else:
+                                print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
+                        elif "." in i.split("=",1)[1]:
+                            print(RED+"ERROR: Invalid file type "+YELLOW+f"'{i.split("=",1)[1].split(".")[1]}'"+RESET)
+                        else:
+                            print(RED+"ERROR: invalid file type "+YELLOW+f"'{i.split("=",1)[1]}'"+RESET)
                     else:
-                        print(RED+"ERROR: invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RESET)
-                else:
-                    print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
-                    paramexception = True
-        else:
-            print(RED+"no target message or file provided. "+YELLOW+"aborting..."+RESET)
+                        print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
+                        paramexception = True
+            else:
+                print(RED+"no target message or file provided. "+YELLOW+"aborting..."+RESET)
     #deciphers the in the parameter provided message or file. msg= for raw text and target= for txts.
     elif prompt.lower().startswith("decipher") or prompt.lower().startswith("decode"):
-
-        params = prompt.lower().removeprefix("decipher").split(",") if prompt.lower().startswith("decipher") else prompt.lower().removeprefix("decode").split(",")
-        caseSensitiveParams = prompt[8:].split(",")  if prompt.lower().startswith("decipher") else prompt[6:].split(",")
+        caseSensitiveParams = prompt[6:].split(",") if prompt.lower().startswith("decode") else prompt[8:].split(",")
         casesensitivecounter = 0
+# snaps system!
+        snaps = []
+        paramexception = False
+        for i in range(len(prompt)):
+            if prompt[i] == '''"''':
+                snaps.append(i)
+        if len(snaps) % 2 != 0:
+            print(RED+"ERROR: unclosed string provided!\n "+YELLOW+" Note that you cannot use quoation marks within strings"+RESET)
+            paramexception=True
         if debug:
-
-
-
-            print(params)
-        paramexception: bool = False
-        if len(params) > 0 and params[0] != "":
-            modifiedParamsList = []
-            paramexception = False
-            for i in params:
-                casesensitivecounter =+ 1
-                if i.replace(" ","").startswith("msg="):
-                    if library != "":
-                        if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] != "" and " ":
-                            print(BLUE+"decoding..."+RESET)
-                            print(GREEN+execute("decipher", caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1], library,True)+RESET)
-                        else:
-                            print(RED+"ERROR: can't decipher emptiness, broh... (msg was set to nothing)" + RESET)
-                    else:
-                        print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
-                elif i.replace(" ","").startswith("target="):
-                    if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
-                        if library != "" and library is not None:
-                            try:
-                                print(BLUE+"decoding "+GREEN+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}"+BLUE+"..."+RESET)
-                                with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"r") as file:
-                                    target = file.read()
-                                newContents = execute("decipher", target, library, False)
-                                if newContents is not None:
-                                    with open(caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1],"w") as file:
-                                        file.write(newContents.replace("²", r"""
-"""))
-                                print(GREEN+f"{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]} successfully decoded!"+RESET)
-                            except FileNotFoundError:
-                                print(RED+"ERROR: File "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
+            print(snaps)
+            print(len(snaps))
+        newprompt = prompt
+        deletedCharacters = 0
+        allcontents= []
+        while len(snaps) > 1:
+            content = prompt[:snaps[1]][snaps[0]+1:]
+            deletedCharactersSnap = len(newprompt[:snaps[1]+1 - deletedCharacters][snaps[0]-deletedCharacters:])
+            if debug:
+                print(newprompt[:snaps[1]+1-deletedCharacters][snaps[0]-deletedCharacters:])
+                print(deletedCharactersSnap)
+            newprompt = newprompt[:snaps[0] - deletedCharacters] + newprompt[snaps[1]+1 - deletedCharacters:]
+            deletedCharacters = deletedCharactersSnap
+            del snaps[:2]
+            allcontents.append(content)
+        if debug:
+            print("contents: "+ " , ".join(allcontents))
+            print(newprompt)
+        params = newprompt.replace(" ","").lower().split(",")
+        for i in range(len(params)):
+            if "msg=" in params[i]:
+                if debug:
+                    print("this:" + params[i])
+                try:
+                    params[i] = params[i] + allcontents[0]
+                    allcontents.remove(allcontents[0])
+                except IndexError:
+                    print(RED+'ERROR: msg parameter must be a string! '+YELLOW+'Try using msg="mymessage" '+RESET)
+                    paramexception=True
+        if not paramexception:
+            params[0] = params[0].removeprefix("decipher") if params[0].startswith("decipher") else params[0].removeprefix("decode")
+            if debug:
+                print(params)
+            if len(params) > 0 and params[0] != "":
+                modifiedParamsList = []
+                for i in params:
+                    casesensitivecounter +=1
+                    if i.replace(" ","").startswith("msg="):
+                        if library != "":
+                            if i != "" and " ":
+                                if not paramexception:
+                                    print(BLUE+"decoding..."+RESET)
+                                    print(GREEN+execute("decipher", i.split("=",1)[1], library,True)+RESET)
+                            else:
+                                print(RED+"ERROR: can't decipher emptiness, broh... (msg was set to nothing)" + RESET)
                         else:
                             print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
-                    elif "." in caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]:
-                        print(RED+"ERROR: Invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                    elif i.replace(" ","").startswith("target="):
+                        if caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].endswith(".txt"):
+                            if library != "" and library is not None:
+                                if not paramexception:
+                                    try:
+                                        print(BLUE+"decoding "+GREEN+f"{i.split("=",1)[1]}"+BLUE+"..."+RESET)
+                                        with open(i.split("=",1)[1],"r") as file:
+                                            target = file.read()
+                                        newContents = execute("decipher", target, library, False)
+                                        if newContents is not None:
+                                            with open(i.split("=",1)[1],"w") as file:
+                                                file.write(newContents.replace("²", r"""
+"""))
+                                        print(GREEN+f"{i.split("=",1)[1]} successfully decoded!"+RESET)
+                                    except FileNotFoundError:
+                                        print(RED+"ERROR: File "+YELLOW+f"'{i.split("=",1)[1]}'"+RED+" does not exist in this directory."+RESET)
+                            else:
+                                print(RED+"ERROR: no current library exists! "+YELLOW+"Please initiate first."+RESET)
+                        elif "." in i.split("=",1)[1]:
+                            print(RED+"ERROR: Invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1].split(".")[1]}'"+RESET)
+                        else:
+                            print(RED+"ERROR: invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RESET)
                     else:
-                        print(RED+"ERROR: invalid file type "+YELLOW+f"'{caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]}'"+RESET)
-                else:
-                    print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
-                    paramexception = True
-        else:
-            print(RED+"ERROR: no target message or file provided. aborting..."+RESET)
+                        print(RED+f"ERROR: invalid parameter definement ('{i}')"+RESET)
+                        paramexception = True
+            else:
+                print(RED+"ERROR: no target message or file provided. aborting..."+RESET)
     elif prompt.lower().startswith("autoquery") or prompt.lower().startswith("aq"):
         params = prompt.lower().removeprefix("autoquery").split(",") if prompt.lower().startswith("autoquery") else prompt.lower().removeprefix("aq").split(",")
         if debug:

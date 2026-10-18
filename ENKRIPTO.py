@@ -18,9 +18,12 @@ DIRRED = "\033[38;2;230;168;91m"
 #AQcreator. last function in regs!!!!!!!!
 
 
+#TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
+
 #!!!!!!!!!!!!!!!!!!!!!!!!!!
 VERSION = "3.4.9"
 #!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
@@ -137,7 +140,7 @@ def intro():
     print(BLUE+f"-- ENKRIPTO v{VERSION} --\n"+GREY+"type 'help' to see a list of commands or a command's function"+RESET)
     if debug:
         print(YELLOW+"WARNING: debug active!"+RESET)
-#TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
+
 
 #MADE BY A SINGLE DUDE - EXPECT BUGS - ALTHOUGH I HAVEN'T SEEN ANY
 
@@ -600,7 +603,7 @@ while True:
         print(BLUE+"(function).params "+RESET+"- shows a function's params and their current values \n") 
         print(BLUE+"save / write "+YELLOW+"{name: str} "+RESET+"- packs and saves current seed in a txt.\n⤤ type 'help save' or 'help write' for a parameter explanation\n")
         print(BLUE+"displayseed / display "+YELLOW+"{packmyseed / pack: bool}"+RESET+" - displays the current seed in use. if packmyseed / pack is true, it will be displayed as a packed seed. Otherwhise it will be displayed in it's natural form.\n")
-        print(BLUE+"scan / list / ls "+RESET+"- scans and lists current directory to make locating your save .txt file easier.\n") #TODO
+        print(BLUE+"scan / list / ls "+RESET+"- scans and lists current directory to make locating your save .txt file easier.\n")
         print(BLUE+"currentpath / cwd / currentdir "+RESET+"- displays your work directory's path.\n")
         print(BLUE+"restoredefaults / defaults / default "+RESET+"- restores all parameters to their default values.\n")
         print(BLUE+"exit "+RESET+"- closes the program\n")

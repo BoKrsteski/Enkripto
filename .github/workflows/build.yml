@@ -69,7 +69,7 @@ jobs:
         GenericName=starter for Enkripto
         Comment=Enkripto is a local encryption tool based around randomness. this starter can be used for desktop execution via double click for example.
         Terminal=true
-        Exec=sh -c 'cd "$(dirname "$0")" && ./Enkripto' %k
+        Exec=sh -c 'DIR="$(dirname "$(readlink -f "$1")")"; sed -i "s|^Icon=.*|Icon=$DIR/icon.png|" "$DIR/Enkripto-Starter.desktop"; cd "$DIR" && exec ./Enkripto' sh %k
         EOF
 
         chmod +x package/Enkripto-Starter.desktop

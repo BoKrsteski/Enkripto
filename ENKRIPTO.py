@@ -14,9 +14,13 @@ BLUE = "\033[96m"
 GREY = "\033[38;2;143;163;191m"
 DIRBLUE = "\033[38;2;91;158;230m"
 DIRRED = "\033[38;2;230;168;91m"
-# TODO documentation for mktxt & showprefs
+# TODO make txt extension optional in target , displayseed crash
 #AQcreator. last function in regs!!!!!!!!
-# init fileloaction should be filename becaus eit will only take enks in data/ENKs
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!
+VERSION = "3.4.9"
+#!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 if os.name == "nt":
     os.system("mode con: cols=120 lines=100")
@@ -114,7 +118,7 @@ def checkDir(filepath):
 normallibrary=r"""abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890ß!§$%&/\()?`+*~#'<>|²³}]{[.-;_: =°@Â,"""
 throwawaylibrary=normallibrary
 library:str=""
-compatibleENKversions= ["1"]
+compatibleENKversions= [VERSION[0]]
 
 def intro():
     print(RED + r'''
@@ -130,7 +134,7 @@ def intro():
                                      gV$$²'                       $$$$$                                    
                                                                   $$$$$                                    
                                                                   $$$$$                                     ''' + RESET)
-    print(BLUE+"-- ENKRIPTO v2.3.4 --\n"+GREY+"type 'help' to see a list of commands or a command's function"+RESET)
+    print(BLUE+f"-- ENKRIPTO v{VERSION} --\n"+GREY+"type 'help' to see a list of commands or a command's function"+RESET)
     if debug:
         print(YELLOW+"WARNING: debug active!"+RESET)
 #TODO CHANGE VERSION NAME WITH EACH UPDATE DUDE
@@ -321,7 +325,7 @@ def makeLibrary():
                     importseed=packSeed(SeedInUse1,True)
                     packerLibrary = createLibrary(normallibrary, random.randint(1000,9898),"None")
                     MAGIC="ENKR"
-                    ENKversion = "1"
+                    ENKversion = VERSION[0]
                     seedData = importseed
                     seedDataLength = str(len(seedData))
                     lengthOfseedDataLength = str(len(str(seedDataLength)))
@@ -413,7 +417,7 @@ def writeToENK():
         print(YELLOW+"WARNING: packerLibrary has not been defined yet. Packing seed..."+RESET)
     if packSeed(SeedInUse1,False) is not None:
         MAGIC="ENKR"
-        ENKversion = "1"
+        ENKversion = VERSION[0]
         seedData = packSeed(SeedInUse1,True)
         seedDataLength = str(len(seedData))
         lengthOfseedDataLength = str(len(str(seedDataLength)))
@@ -1243,14 +1247,3 @@ while True:
                     print(GREEN+"query added."+RESET)
                     if debug:
                         print(queryCollection)
-
-
-
-# to be honest i don't know what these used to do but they're great for reminiscing:
-# createNew = True
-# readFromENK = False
-# custom_PackerLibrary = "$M+EIaA{5ßGCWxL-2mhBqkjX 8?(d6SO4p]\;zw²eo)u_<l|!§tFVQ[R.v'>`TZ=P#³r3/}NK:bH1~&UJsDY*g,7i%n90fcy"
-# importseed = "171}8k1kSS}oW}8o}²8&k"
-# seed_ispacked = True
-# encryptionamount =random.randint(100,500) 
-# packMySeed = True

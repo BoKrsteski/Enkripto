@@ -78,7 +78,7 @@ def fetchPreferences(withStatus: bool = False):
                 with open("data/preferences/preferences.json","w") as file:
                     Preferences["filelocation"] = "Default.enk"
                     json.dump(Preferences,file,indent=4)
-                fileLocation = "Default.enk"
+                fileLocation = "data/ENKs/Default.enk"
         elif indexCounter ==2 or indexCounter==3:
             global readFromENK
             global createNew
@@ -703,7 +703,7 @@ while True:
             modifiedParamsList = []
             paramexception = False
             for i in params:
-                casesensitivecounter =+ 1
+                casesensitivecounter += 1
                 if i.replace(" ","").startswith("createnew="):
                     if checkForBool(i.replace(" ","")) is not None:
                         createNew = checkForBool(i.replace(" ",""))
@@ -758,6 +758,8 @@ while True:
                 elif i.replace(" ","").startswith("filelocation="):
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
                         fileLocation = "data/ENKs/"+caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
+                        if debug:
+                            print("DEBUGCHECK: "+fileLocation)
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
                         with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
@@ -848,7 +850,7 @@ while True:
                 casesensitivecounter += 1
                 if i.replace(" ","").startswith("name="):
                     if i.replace(" ","").split("=",1)[1].endswith(".enk"):
-                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
+                        fileLocation = "data/ENKs/"+caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1]
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
                         with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
@@ -858,7 +860,7 @@ while True:
                         print(YELLOW+"only '.enk' files are allowed to save enkripto data"+RESET)
                         paramexception = True
                     else:
-                        fileLocation = caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] + ".enk"
+                        fileLocation = "data/ENKs/"+caseSensitiveParams[casesensitivecounter - 1].split("=",1)[1] + ".enk"
                         modifiedParamsList.append(f"fileLocation = {fileLocation}")
                         with open("data/preferences/preferences.json","w") as file:
                             Preferences["filelocation"] = fileLocation
@@ -867,7 +869,7 @@ while True:
                     if len(modifiedParamsList) > 0:
                         if debug:
                             print(modifiedParamsList)
-                            print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
+                        print(GREEN+"parameters succesfully modified: "+BLUE+f"{" , ".join(modifiedParamsList)}") if len(modifiedParamsList) > 1 else print(f"parameters succesfully modified: {modifiedParamsList[0]}"+RESET)
                     print(RED+f"invalid parameter definement ('{i}')"+RESET)
                     paramexception = True
         if paramexception:
@@ -998,7 +1000,7 @@ while True:
                 elif i.replace(" ","").startswith("debug="):
                     if checkForBool(i.replace(" ","")) is not None:
                         debug = checkForBool(i.replace(" ",""))
-                        modifiedParamsList.append(f"debug = {debug}")
+                        modifiedParamsList.append(f"debug = {debug}") #TODO debug warning here
                     else:
                         paramexception= True
                 elif i.replace(" ","").startswith("encryptionamount="):

@@ -1005,7 +1005,7 @@ while True:
                 elif i.replace(" ","").startswith("debug="):
                     if checkForBool(i.replace(" ","")) is not None:
                         debug = checkForBool(i.replace(" ",""))
-                        modifiedParamsList.append(f"debug = {debug}") #TODO debug warning here
+                        modifiedParamsList.append(f"debug = {debug}")
                         debugWarn = True
                     else:
                         paramexception= True

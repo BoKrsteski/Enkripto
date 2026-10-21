@@ -1,0 +1,3 @@
+init
+encode msg= "hi"
+save name=example.enk

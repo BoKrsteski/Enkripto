@@ -571,7 +571,12 @@ intro()
 #    ::       ::   :::  ::   :::  :::: ::    :: ::::  ::   :::  :::  
 #    :         :   : :   :   : :  :: : :    : :: ::    :   : :  :::  
 AQmode: bool = False
+debugWarn = False
 while True:
+    if debugWarn:
+        if debug:
+            print(YELLOW+"WARNING: Debug active!"+RESET)
+        debugWarn = False
     if AQmode:
         prompt = input(YELLOW+"AutoQueryCreator: Enter Query > "+RESET)
     else:
@@ -1001,6 +1006,7 @@ while True:
                     if checkForBool(i.replace(" ","")) is not None:
                         debug = checkForBool(i.replace(" ",""))
                         modifiedParamsList.append(f"debug = {debug}") #TODO debug warning here
+                        debugWarn = True
                     else:
                         paramexception= True
                 elif i.replace(" ","").startswith("encryptionamount="):

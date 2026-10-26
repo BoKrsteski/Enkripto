@@ -11,6 +11,7 @@ If you are on *LINUX* or *macOS*, execute `ìnit.sh`, preferrably using `./init.
 again, a virtual environment along with a `.venv` folder will be created in the *PARENT* directory, meaning one directory before this one, where the python file should also be located.
 
 make sure to have *PYTHON3* installed, as it is required for this process.
+also ensure that you have pip installed, as users sometimes have had trouble without it previously installed.
 
 If everything goes correctly, you will find a `.venv` folder in the parent directory which should include all packages from `requirements.txt`.
 

@@ -1,0 +1,8 @@
+# exampledata directory
+
+this directory holds example files for each filetype enkripto utilizes. 
+
+they visualize how an actual natively established data directory for enkripto might look.
+
+note that the data uses defaults. It is, however, actually usable if you want to do that for what ever reason.
+
